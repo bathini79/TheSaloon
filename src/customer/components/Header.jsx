@@ -1,63 +1,76 @@
-import { Button } from '@/components/ui/button';
-import { useCart } from '@/Context/CartContext';
-import { ShoppingCart,Calendar } from 'lucide-react';
-import React from 'react'
-import { useNavigate } from 'react-router-dom';
+import { useCart } from "@/Context/CartContext";
+import { useRole } from "@/Context/RoleContext";
+import { account } from "@/services/appwrite/appwrite";
+import { ShoppingCart, Calendar, LogOut } from "lucide-react";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
 function Header() {
-    const navigate= useNavigate()
-    const checkout = () => {
-        navigate("/customer/cart");
-      };
-    
-      const viewBookings = () => {
-        navigate("/customer/bookings");
-      };
+  const navigate = useNavigate();
+  const checkout = () => navigate("/customer/cart");
+  const { setRole } = useRole();
+  const viewBookings = () => navigate("/customer/bookings");
   const { cart } = useCart();
+
+  const handleSignOut = async () => {
+    try {
+      await account.deleteSessions("current");
+      localStorage.clear();
+      setRole(null);
+      navigate("/login", { replace: true });
+    } catch (error) {
+      console.error("Error during sign-out:", error);
+    }
+  };
 
   return (
     <header className="bg-gray-800 text-white py-4 px-6 flex justify-between items-center">
-        <h1 className="text-2xl font-bold" onClick={()=>navigate("/")} style={{cursor:"pointer"}}>Define Salon</h1>
-        <div className="flex gap-4">
-          <Button
-            onClick={viewBookings}
-            className="bg-gray-600 hover:bg-gray-700 text-white"
-          >
-            <Calendar className="mr-2" />
-            View Bookings
-          </Button>
-          <Button
-            onClick={checkout}
-            style={{
-              backgroundColor: "rgba(254, 0, 0, 0.76)",
-              position: "relative",
-              paddingRight: "1.5rem",
-            }}
-            className="text-white flex items-center"
-          >
-            <ShoppingCart className="mr-2" />
-            Cart
-            {cart.length > 0 && (
-              <div
-                className="absolute top-0 right-0 flex items-center justify-center rounded-full"
-                style={{
-                  backgroundColor: "white",
-                  color: "rgba(254, 0, 0, 0.76)",
-                  fontSize: "0.75rem",
-                  fontWeight: "bold",
-                  width: "18px",
-                  height: "18px",
-                  lineHeight: "18px",
-                  textAlign: "center",
-                }}
-              >
-                {cart.length}
-              </div>
-            )}
-          </Button>
+      {/* Logo */}
+      <h1
+        className="text-2xl font-bold cursor-pointer"
+        onClick={() => navigate("/")}
+      >
+        Define Salon
+      </h1>
+
+      {/* Action Icons */}
+      <div className="flex items-center gap-6">
+        {/* View Bookings Icon */}
+        <div
+          className="relative cursor-pointer hover:text-gray-400"
+          onClick={viewBookings}
+          title="View Bookings"
+        >
+          <Calendar size={24} />
         </div>
-      </header>
-  )
+
+        {/* Cart Icon with Badge */}
+        <div
+          className="relative cursor-pointer hover:text-gray-400"
+          onClick={checkout}
+          title="Cart"
+        >
+          <ShoppingCart size={24} />
+          {cart.length > 0 && (
+            <span
+              className="absolute top-[-6px] right-[-6px] bg-white text-red-600 font-bold text-xs rounded-full w-5 h-5 flex items-center justify-center"
+            >
+              {cart.length}
+            </span>
+          )}
+        </div>
+
+        {/* Sign Out Icon */}
+        <div
+          className="relative cursor-pointer hover:text-gray-400"
+          onClick={handleSignOut}
+          title="Sign Out"
+        >
+          <LogOut size={24} />
+        </div>
+      </div>
+    </header>
+  );
 }
 
-export default Header
+export default Header;

@@ -3,7 +3,7 @@ import { useRole } from "@/Context/RoleContext";
 import { fetchBookingServicesByUserId } from "@/services/api";
 import { Clock, Calendar, CheckCircle, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
+import { AppointmentStatus } from "@/enums";
 const BookingsPage = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,9 +15,9 @@ const BookingsPage = () => {
       try {
         // Simulated API call with hardcoded limit
         const data = await fetchBookingServicesByUserId(userData.$id);
-        if(data){
-          console.log(data)
-        setBookings(data || []);
+        if (data) {
+          console.log(data);
+          setBookings(data || []);
         }
       } catch (error) {
         console.error("Error fetching bookings:", error);
@@ -29,7 +29,29 @@ const BookingsPage = () => {
 
     if (userData?.$id) fetchBookings();
   }, [userData?.$id]);
-console.log(bookings)
+  const statusColors = {
+    PENDING_PAYMENT: "bg-yellow-100 text-yellow-800",
+    PAYMENT_FAILED: "bg-red-100 text-red-800",
+    PENDING_CONFIRMATION: "bg-blue-100 text-blue-800",
+    CONFIRMED: "bg-green-100 text-green-800",
+    SERVICE_DONE: "bg-gray-100 text-gray-800",
+    CUSTOMER_NO_SHOW: "bg-orange-100 text-orange-800",
+    PENDING_REFUND: "bg-indigo-100 text-indigo-800",
+    CANCELLED_BY_ADMIN: "bg-red-100 text-red-800",
+    CANCELLED_BY_CUSTOMER: "bg-gray-100 text-gray-800",
+  };
+
+  const iconComponents = {
+    PENDING_PAYMENT: <XCircle className="mr-1 text-yellow-500" />,
+    PAYMENT_FAILED: <XCircle className="mr-1 text-red-500" />,
+    PENDING_CONFIRMATION: <XCircle className="mr-1 text-blue-500" />,
+    CONFIRMED: <CheckCircle className="mr-1 text-green-500" />,
+    SERVICE_DONE: <CheckCircle className="mr-1 text-gray-500" />,
+    CUSTOMER_NO_SHOW: <XCircle className="mr-1 text-orange-500" />,
+    PENDING_REFUND: <XCircle className="mr-1 text-indigo-500" />,
+    CANCELLED_BY_ADMIN: <XCircle className="mr-1 text-red-500" />,
+    CANCELLED_BY_CUSTOMER: <XCircle className="mr-1 text-gray-500" />,
+  };
   return (
     <div className="container mx-auto p-4 min-h-screen bg-gray-100">
       <h1 className="text-2xl font-bold text-gray-800 text-center mb-6">
@@ -45,15 +67,15 @@ console.log(bookings)
           You have no bookings yet. Explore our services and book your
           experience now!
         </p>
-      ) : 
-      (
+      ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {bookings?.map((booking) => (
             <div
               key={booking.$id}
               className="bg-white rounded-lg shadow-lg p-6 border border-gray-200 hover:shadow-xl transition-shadow duration-300"
             >
-              {booking?.bookingServices?.map((service) => {                return (
+              {booking?.bookingServices?.map((service) => {
+                return (
                   <div key={service.$id} className="mb-4">
                     <h2 className="text-lg font-bold text-gray-800 mb-2">
                       {service?.services?.name} {/* Changed to 'service' */}
@@ -79,17 +101,11 @@ console.log(bookings)
               <p className="text-sm text-gray-500 flex items-center mb-4">
                 <span
                   className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${
-                    booking.status === "CONFIRMED"
-                      ? "bg-green-100 text-green-800"
-                      : "bg-red-100 text-red-800"
+                    statusColors[booking.status]
                   }`}
                 >
-                  {booking.status === "CONFIRMED" ? (
-                    <CheckCircle className="mr-1 text-green-500" />
-                  ) : (
-                    <XCircle className="mr-1 text-red-500" />
-                  )}
-                  {booking.status}
+                  {iconComponents[booking.status]}
+                  {AppointmentStatus[booking.status]}
                 </span>
               </p>
               <div className="flex justify-between items-center">
@@ -110,12 +126,9 @@ console.log(bookings)
             </div>
           ))}
         </div>
-      )
-      
-      }
+      )}
     </div>
-    
-  )
+  );
 };
 
 export default BookingsPage;

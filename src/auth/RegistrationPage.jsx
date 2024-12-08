@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { createUsers } from "@/services/api"; // Ensure this is implemented correctly
 import { account } from "@/services/appwrite/appwrite";
 import { Button } from "@/components/ui/button";
+import { useRole } from "@/Context/RoleContext";
 
 const Registration = () => {
   const navigate = useNavigate();
@@ -14,13 +15,15 @@ const Registration = () => {
     phone: "",
   });
   const [error, setError] = useState("");
-
+  const { setRole,setUserData } = useRole();
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+  const [loading,setLoading] = useState(false)
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setLoading(true)
     try {
       // Step 1: Create a new user
       const user = await account.create(
@@ -45,13 +48,14 @@ const Registration = () => {
         name: formData.name,
         phone: formData.phone
       });
-
+      setRole("customer")
       // Step 5: Redirect to customer
       navigate("/customer");
     } catch (err) {
       console.error("Registration Error:", err);
       setError(err.message || "Error during registration. Try again.");
     }
+    setLoading(false)
   };
 
   return (
@@ -102,8 +106,31 @@ const Registration = () => {
           type="submit"
           className="w-full"
           style={{ backgroundColor: "#EF4444", color: "#fff" }}
+          disabled={loading}
         >
-          Register
+           {loading && (
+            <svg
+              className="animate-spin h-4 w-4 mr-2 text-white inline-block"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              ></circle>
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8v8h8a8 8 0 01-8 8v-8H4z"
+              ></path>
+            </svg>
+          )}
+                    {loading ? "Registering..." : "Register"}
         </Button>
         <p className="text-sm text-center mt-4">
           Already have an account?{" "}

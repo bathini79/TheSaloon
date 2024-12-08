@@ -3,7 +3,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Button } from "../../components/ui/button";
 import { Clock, ShoppingCart } from "lucide-react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import "./CartPage.css"; // Make sure the custom styles are still in place
 import { useCart } from "@/Context/CartContext";
 import { useRole } from "@/Context/RoleContext";
@@ -55,10 +55,7 @@ console.log(userData)
         email: userData.email,
       },
       location: selectedLocation.$id,
-      services: cart.map((i) => ({
-        $id: i.$id, // Correct syntax for object property assignment
-      })),
-      total,
+      total:+total,
       userId:userData.$id
     };
 
@@ -69,22 +66,23 @@ console.log(userData)
       if (booking && booking.$id) {
         // Create a booking service entry for each item in the cart
         for (const service of cart) {
-          await createBookingServiceFunc(booking.$id, service.$id,service.data,service.time);
+          await createBookingServiceFunc(booking.$id, service.$id,schedule[service.$id].date,schedule[service.$id].time);
         }
         // Optionally, handle payment after creating booking and services
+        Navigate("/customer/bookings")
       }
     } catch (error) {
       setError("Error while creating booking.");
     }
   };
-
+console.log("sc",schedule)
   // Function to create the booking service entry
-  const createBookingServiceFunc = async (bookingId, serviceId,data,time) => {
+  const createBookingServiceFunc = async (bookingId, serviceId,date,time) => {
     try {
       await createBookingServices({
         bookings: bookingId, // Link to the booking ID
         services: serviceId, // Service ID
-        data,
+        date,
         time
       });
     } catch (error) {
