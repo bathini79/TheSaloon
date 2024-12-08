@@ -1,30 +1,42 @@
-// tableConfig.js
 import { Button } from "@/components/ui/button";
 
-export const adminBookingsTableConfig = () => [
-  { accessorKey: "name", header: "Name", id: "name" },
-  { accessorKey: "address", header: "Address", id: "address" },
-  { accessorKey: "phone_number", header: "Phone Number", id: "phone_number" },
+// bookingsTableConfig.js
+export const bookingsTableConfig = (actions) => [
+  { id: 'status', accessorKey: "status", header: "Status" }, // Enum field for booking status
+
+
   {
-    accessorKey: "operational_hours_starts_at",
-    header: "Operational Hours Starts At",
-    id: "operational_hours_starts_at",
+    id: 'user',
+    accessorKey: "user.name", // Assuming `user` is populated with related data
+    header: "User",
+    cell: ({ row }) => row.original.user?.name || "N/A",
   },
+
   {
-    accessorKey: "operational_hours_ends_at",
-    header: "Operational Hours Ends At",
-    id: "operational_hours_ends_at",
+    id: 'location',
+    accessorKey: "location.name", // Assuming `location` is populated with related data
+    header: "Location",
+    cell: ({ row }) => row.original.location?.name || "N/A",
   },
+
   {
-    id: "actions",
+    id: 'actions',
     header: "Actions",
     cell: ({ row }) => (
-      <Button
-        onClick={() => actions.handleEdit(row.original)}
-        variant="outline"
-      >
-        Edit
-      </Button>
+      <div className="flex space-x-2">
+        <Button
+          onClick={() => actions.handleEdit(row.original)}
+          variant="outline"
+        >
+          Edit
+        </Button>
+        <Button
+          onClick={() => actions.handleDelete(row.original)}
+          variant="destructive"
+        >
+          Delete
+        </Button>
+      </div>
     ),
   },
 ];

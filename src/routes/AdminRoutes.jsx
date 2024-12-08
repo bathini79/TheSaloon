@@ -1,28 +1,25 @@
+import { Routes, Route } from "react-router-dom";
+import AdminHome from "@/admin/pages/AdminHome";
+import Services from "@/admin/pages/Services";
 import Locations from "@/admin/pages/Locations";
-import AdminHome from "../admin/pages/AdminHome";
-import Services from "../admin/pages/Services";
-import { Route, Routes } from "react-router-dom"; // Correct import of Route and Routes
-import { SidebarProvider } from "@/shared/ui/sidebar";
-import { AppSidebar } from "@/admin/components/Sidebar/AppSidebar";
 import Employees from "@/admin/pages/Employees";
 import AdminBookings from "@/admin/pages/AdminBooking";
-
-const adminRoutesItem = [
-  { path: "/admin", element: <AdminHome /> },
-  { path: "/admin/services", element: <Services /> },
-  { path: "/admin/locations", element: <Locations /> },
-  { path: "/admin/employees", element: <Employees /> },
-  { path: "/admin/bookings", element: <AdminBookings /> },
-];
+import { SidebarProvider } from "@/shared/ui/sidebar";
+import { AppSidebar } from "@/admin/components/Sidebar/AppSidebar";
 
 const AdminRoutes = () => {
   return (
     <SidebarProvider>
       <AppSidebar />
       <Routes>
-        {adminRoutesItem.map((route) => (
-          <Route key={route.path} path={route.path} element={route.element} />
-        ))}
+        {/* Define routes relative to /admin */}
+        <Route path="/" element={<AdminHome />} />
+        <Route path="services" element={<Services />} />
+        <Route path="locations" element={<Locations />} />
+        <Route path="employees" element={<Employees />} />
+        <Route path="bookings" element={<AdminBookings />} />
+        {/* Fallback Route */}
+        <Route path="*" element={<AdminHome />} />
       </Routes>
     </SidebarProvider>
   );

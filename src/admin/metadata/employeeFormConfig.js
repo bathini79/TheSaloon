@@ -1,5 +1,5 @@
-export const employeeFormConfig=(actions) => {  
-  return([
+export const employeeFormConfig = (actions) => {
+  return [
     {
       id: "location",
       label: "Location",
@@ -47,5 +47,5 @@ export const employeeFormConfig=(actions) => {
       type: "time",
       required: true,
     },
-  ])};
-  
+  ];
+};

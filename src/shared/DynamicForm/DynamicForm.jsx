@@ -12,7 +12,6 @@ export const DynamicForm = ({
 }) => {
   const [formData, setFormData] = useState(data);
   const [errors, setErrors] = useState({});
-
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -30,7 +29,7 @@ export const DynamicForm = ({
   const validateForm = () => {
     const newErrors = {};
     formConfig.forEach(({ id, label, required }) => {
-      if (required && !formData[id]) {
+      if (required && !formData?.[id]) {
         newErrors[id] = `${label} is required`;
       }
     });
@@ -44,7 +43,6 @@ export const DynamicForm = ({
       onSubmit(formData);
     }
   };
-
   // Dynamic field rendering
   const renderField = ({
     id,
@@ -56,13 +54,12 @@ export const DynamicForm = ({
     ...rest
   }) => {
     const isHidden =
-      dependency && formData[dependency.key] !== dependency.value;
+      dependency && formData?.[dependency?.key] !== dependency.value;
     if (isHidden) return null;
-
     const commonProps = {
       id,
       name: id,
-      value: formData[id] || "",
+      value: formData?.[id] || "",
       onChange: handleChange,
       placeholder: placeholder || "",
       className: `border ${
@@ -70,7 +67,6 @@ export const DynamicForm = ({
       } p-2 w-full`,
       ...rest,
     };
-
     switch (type) {
       case "text":
       case "email":
@@ -93,7 +89,7 @@ export const DynamicForm = ({
             <input
               {...commonProps}
               type="checkbox"
-              checked={!!formData[id]}
+              checked={!!formData?.[id]}
               className="h-5 w-5 border-gray-300 rounded focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
             />
             <label htmlFor={id} className="text-sm font-medium text-gray-700">
@@ -122,7 +118,7 @@ export const DynamicForm = ({
             <select
               id={id}
               name={id}
-              value={formData[id] || ""}
+              value={formData?.[id] || ""}
               onChange={handleChange}
               className={`border ${
                 errors[id] ? "border-red-500" : "border-gray-300"
@@ -130,7 +126,7 @@ export const DynamicForm = ({
             >
               <option value="">Select {label.toLowerCase()}</option>
               {options.map((option) => (
-                <option key={option.$id} value={option.address}>
+                <option key={option.$id} value={option.$id}>
                   {option.address}
                 </option>
               ))}
@@ -145,7 +141,7 @@ export const DynamicForm = ({
               {label}
             </Label>
             <MultiSelect
-              defaultValue={formData[id] || []}
+              defaultValue={formData?.[id] || []}
               onChange={(e) => {
                 setFormData({ ...formData, [id]: e });
               }}
@@ -170,7 +166,7 @@ export const DynamicForm = ({
                     id={`${id}-${option.value}`}
                     name={id}
                     value={option.value}
-                    checked={formData[id] === option.value}
+                    checked={formData?.[id] === option?.value}
                     onChange={handleChange}
                     className="h-4 w-4 border-gray-300 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
                   />

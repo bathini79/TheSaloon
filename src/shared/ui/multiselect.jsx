@@ -23,7 +23,7 @@ const MultiSelect = ({ options, label, onChange }) => {
     }
     setSelectedOptions(updatedSelections);
     if (onChange) {
-      onChange(updatedSelections);
+      onChange(updatedSelections.map((selection)=>selection.$id));
     }
   };
 
@@ -34,7 +34,6 @@ const MultiSelect = ({ options, label, onChange }) => {
       onChange(updatedSelections);
     }
   };
-
   return (
     <div>
       <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -42,13 +41,13 @@ const MultiSelect = ({ options, label, onChange }) => {
           <Button variant="outline" className="w-full justify-between">
             {selectedOptions.length > 0 ? (
               <div className="flex gap-1 flex-wrap">
-                {selectedOptions.map((value) => (
+                {selectedOptions?.map((value) => (
                   <Badge
                     key={value}
                     variant="secondary"
                     className="flex items-center gap-1"
                   >
-                    {value}
+                    {value?.name}
                     <X
                       className="h-3 w-3 cursor-pointer"
                       onClick={(e) => {
@@ -69,19 +68,19 @@ const MultiSelect = ({ options, label, onChange }) => {
           <div className="max-h-40 overflow-y-auto">
             {options.map((option) => (
               <div
-                key={option.value}
+                key={option.$id}
                 className="flex items-center space-x-2 py-1"
               >
                 <Checkbox
-                  id={option.value}
-                  checked={selectedOptions.includes(option.value)}
-                  onCheckedChange={() => handleToggle(option.value)}
+                  id={option.$id}
+                  checked={selectedOptions.includes(option)}
+                  onCheckedChange={() => handleToggle(option)}
                 />
                 <label
-                  htmlFor={option.value}
+                  htmlFor={option.$id}
                   className="text-sm font-medium leading-none"
                 >
-                  {option.label}
+                  {option.name}
                 </label>
               </div>
             ))}

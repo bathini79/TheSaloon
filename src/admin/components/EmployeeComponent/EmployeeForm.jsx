@@ -9,21 +9,17 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 const EmployeeForm = ({ onClose }) => {
   const [locations, setLocations] = useState([]);
   const [services, setServices] = useState([]);
+  const { toast } = useToast();
 
   // Fetch locations and services on component mount
   useEffect(() => {
     const loadLocations = async () => {
       const { response } = await fetchAllLocations();
-      setLocations([
-        { $id: "BAth", address: "ll" },
-        {
-          $id: "BAth1",
-          address: "ll2",
-        },
-      ]);
+      setLocations(response.documents);
     };
 
     const loadServices = async () => {
@@ -50,7 +46,7 @@ const EmployeeForm = ({ onClose }) => {
     }
   };
 
-  return locations && services ? (
+  return locations?.length>1 && services?.length>1 ? (
     <Dialog open={true} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>

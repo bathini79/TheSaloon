@@ -1,3 +1,4 @@
+import ProfileMenu from "@/auth/ProfileMenu"
 import {  Sidebar,
   SidebarContent,
   SidebarGroup,
@@ -6,7 +7,7 @@ import {  Sidebar,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem } from "@/shared/ui/sidebar"
-import { BookUser, Calendar, Home, Inbox, Search, Settings } from "lucide-react"
+import { BookUser, Calendar, Home, Inbox, Users } from "lucide-react"
 
 
 
@@ -33,9 +34,9 @@ const items = [
     icon: BookUser,
   },
   {
-    title: "Settings",
-    url: "#",
-    icon: Settings,
+    title: "Users",
+    url: "users",
+    icon: Users,
   },
 ]
 
@@ -57,6 +58,7 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              <ProfileMenu/>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

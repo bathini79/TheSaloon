@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import LocationPopup from "../components/LocationPopup";
 import { fetchAllLocations } from "@/services/api";
 import Catalogue from "../components/Catalogue";
+import { useCart } from "@/Context/CartContext";
 
 export default function CustomerHome() {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedLocation, setSelectedLocation] = useState();
   const [locations, setLocations] = useState([]);
+  const {selectedLocation,setSelectedLocation} = useCart({})
   const handleSelectedLocation = (location) => {
     setSelectedLocation(location);
   };
@@ -34,6 +35,7 @@ export default function CustomerHome() {
         setIsOpen={setIsOpen}
         locations={locations}
         handleSelectedLocation={handleSelectedLocation}
+        selectedLocation={selectedLocation}
       />
     </>
   );

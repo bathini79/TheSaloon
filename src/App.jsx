@@ -1,7 +1,13 @@
-import AppRouter from './routes/AppRouter';
+import { CartProvider } from "./Context/CartContext";
+import { RoleProvider } from "./Context/RoleContext";
+import AppRouter from "./routes/AppRouter";
 function App() {
   return (
-    <AppRouter/>
+    <CartProvider>
+    <RoleProvider>
+      <AppRouter />
+    </RoleProvider>
+    </CartProvider>
   );
 }
 

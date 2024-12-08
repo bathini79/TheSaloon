@@ -11,6 +11,7 @@ export default function LocationPopup({
   setIsOpen,
   locations,
   handleSelectedLocation,
+  selectedLocation
 }) {
   const handleOnChangeLocation = (event) => {
     const selectedLocation = locations.find(
@@ -22,7 +23,7 @@ export default function LocationPopup({
 
   return (
     <div>
-      <Dialog open={isOpen} onOpenChange={() => setIsOpen(false)}>
+      {locations.length>0 ?<Dialog open={isOpen} onOpenChange={() => setIsOpen(false)}>
         <DialogContent>
           <DialogTitle>Choose Your Location</DialogTitle>
           <DialogDescription>
@@ -32,7 +33,8 @@ export default function LocationPopup({
             <select
               onChange={handleOnChangeLocation}
               className="w-full border border-gray-300 rounded-md p-2"
-            >
+              value={selectedLocation?.["$id"] || ""} // Set value to the selectedLocation's $id or empty string if no location selected
+              >
               <option value="" disabled>
                 Select a location
               </option>
@@ -41,11 +43,10 @@ export default function LocationPopup({
                   {location.name ? location.name : location.address}
                 </option>
               ))}
-              ))
             </select>
           </div>
         </DialogContent>
-      </Dialog>
+      </Dialog> :  null}
     </div>
   );
 }

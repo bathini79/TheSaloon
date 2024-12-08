@@ -18,6 +18,10 @@ const collections = {
       bookings: {
         collectionId: import.meta.env.VITE_COLLECTION_BOOKINGS_ID,
         databaseId: import.meta.env.VITE_DATABASE_ID,
+      },
+      bookingServices: {
+        collectionId: import.meta.env.VITE_COLLECTION_BOOKING_SERVICES_ID,
+        databaseId: import.meta.env.VITE_DATABASE_ID,
       }
 }
 export default collections

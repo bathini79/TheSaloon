@@ -1,45 +1,68 @@
 import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import LocationForm from "../components/LocationComponent/LocationForm";
-import { CirclePlus } from "lucide-react";
-import { createBooking, fetchAllBookings } from "@/services/api";
+import { createBooking, createBookingServices, fetchAllBookings } from "@/services/api";
 import DashboardTable from "@/shared/DynamicTable/DashboardTable";
-import AdminBookingsForm from "../components/AdminBookings.jsx/AdminBookingsForm";
-import { adminBookingsTableConfig } from "../metadata/adminBookingsTableConfig";
+import AdminBookingsForm from "../components/AdminBookings/AdminBookingsForm";
 import { useToast } from "@/hooks/use-toast";
+import { bookingsTableConfig } from "../metadata/adminBookingsTableConfig";
 
 const AdminBookings = () => {
-  const [locationAdd, setLocationAdd] = useState(false);
+  const [adminBookingsAdd, setAdminBookingsAdd] = useState(false);
   const [reloadData, setReloadData] = useState(false);
   const [formData, setFormData] = useState({});
   const [updateData, setUpdateData] = useState(false);
 
   const onClose = () => {
-    setLocationAdd(false);
+    setAdminBookingsAdd(false);
     setReloadData(true);
     setUpdateData(false);
   };
 
   // This is where you define the handleEdit function
   const handleEdit = (location) => {
-    setLocationAdd(true);
+    location.name = location.user.name;
+    location.location = location.location.name;
+
+    setAdminBookingsAdd(true);
     setFormData(location);
     setUpdateData(true);
     // Your logic for editing the location goes here
   };
   const { toast } = useToast();
-  const handleAddLocation = async (data) => {
-    const { response, error } = await createBooking(data, updateData);
-    if (response) {
-      toast({
-        title: "Successfully added location",
-      });
-      onClose(); // Close dialog after successful submission
-    } else {
-      toast({
-        title: error,
-        variant: "destructive",
-      });
+
+  const createBookingServiceFunc = async (bookingId, employeeId) => {
+    try {
+      await createBookingServices(
+        {
+          $id: bookingId, // Link to the booking ID
+          employee: employeeId, // Service ID
+        },
+        true
+      );
+    } catch (error) {
+      console.error("Error while creating booking service:", error);
+    }
+  };
+  const handleAddBookings = async (data) => {
+    const payload = {
+      $id: data.$id,
+      status: data.status,
+    };
+    const booking = await createBooking(payload, updateData);
+
+    if (booking && booking.$id) {
+      const serviceKeys = Object.keys(data).filter((key) =>
+        key.startsWith("service_")
+      );
+      const _data = serviceKeys.map((key) => ({
+        bookingId: key.split("service_")[1], // Extract the part after "service_"
+        employeeId: data[key], // Get the value of the current service key
+      }));
+      for (const service of _data) {
+        await createBookingServiceFunc(service.bookingId, service.employeeId);
+      }
+      setTimeout(()=>{
+        onClose()
+      },[2000])
     }
   };
   return (
@@ -53,16 +76,16 @@ const AdminBookings = () => {
       <div className="w-full bg-white shadow-md rounded-lg p-6">
         <DashboardTable
           fetchDataFunc={fetchAllBookings} // Function to fetch data
-          columnsConfig={adminBookingsTableConfig({ handleEdit })} // Pass handleEdit within an object
-          placeholder="Search for a location..." // Optional search placeholder
+          columnsConfig={bookingsTableConfig({ handleEdit })} // Pass handleEdit within an object
+          placeholder="Search for a bookings..." // Optional search placeholder
           reloadData={reloadData}
         />
       </div>
 
-      {locationAdd && (
+      {adminBookingsAdd && (
         <AdminBookingsForm
           onClose={onClose}
-          handleAddLocation={handleAddLocation}
+          handleAddBookings={handleAddBookings}
           formData={formData}
           updateData={updateData}
         />

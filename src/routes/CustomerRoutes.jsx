@@ -1,17 +1,16 @@
-import CartPage from "@/customer/components/CartPage";
+import { Routes, Route } from "react-router-dom";
 import CustomerHome from "@/customer/pages/CustomerHome";
-import { Route, Routes } from "react-router-dom"; // Correct import of Route and Routes
+import CartPage from "@/customer/components/CartPage";
+import BookingsPage from "@/customer/components/Bookings";
 
-const customerRoutesItem = [
-  { path: "/", element: <CustomerHome /> },
-  { path: "/cart", element: <CartPage /> },
-];
 const CustomerRoutes = () => {
   return (
     <Routes>
-      {customerRoutesItem.map((route) => (
-        <Route key={route.path} path={route.path} element={route.element} />
-      ))}
+      {/* Define routes relative to /customer */}
+      <Route path="/" element={<CustomerHome />} />
+      <Route path="/bookings" element={<BookingsPage />} />
+      <Route path="/cart" element={<CartPage />} />
+      {/* Fallback Route */}
     </Routes>
   );
 };

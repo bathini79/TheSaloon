@@ -15,9 +15,10 @@ import {
   CardFooter,
 } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
-import { ShoppingCart, MapPin, DollarSign, Clock, Plus } from "lucide-react";
+import { ShoppingCart, MapPin, DollarSign, Clock, Plus, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { fetchAllServices } from "@/services/api";
+import { useCart } from "@/Context/CartContext";
 
 // Simulated API for fetching services
 const fetchServices = async (location, page) => {
@@ -52,12 +53,11 @@ const Catalogue = ({
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [cart, setCart] = useState([]);
   const [showCheckout, setShowCheckout] = useState(false);
   const scrollAnchorRef = useRef(null);
   const observer = useRef(null);
   const navigate = useNavigate(); // Initialize the navigate function
-
+  const { cart, addToCart } = useCart();
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -67,7 +67,7 @@ const Catalogue = ({
         setServices((prev) => {
           const existingIds = new Set(prev.map((service) => service.id));
           const newServices = data.services.filter(
-            (service) => !existingIds.has(service.id),
+            (service) => !existingIds.has(service.id)
           );
           return [...prev, ...newServices];
         });
@@ -104,7 +104,7 @@ const Catalogue = ({
 
   const handleLocationChange = (value) => {
     const selectedLocation = locations.find(
-      (location) => location["$id"] === value,
+      (location) => location["$id"] === value
     );
     handleGlobalSelectedLocation(selectedLocation);
     setPage(1);
@@ -112,21 +112,66 @@ const Catalogue = ({
     setHasMore(true);
   };
 
-  const addToCart = (service) => {
-    setCart((prevCart) => [...prevCart, service]);
+  const handleAddToCart = (service) => {
+    addToCart(service);
   };
 
   const checkout = () => {
-    setShowCheckout(true);
+    navigate("/customer/cart");
   };
 
-  if (showCheckout) {
-    navigate("/cart"); // Replace with your desired route
+  const viewBookings = () => {
+    navigate("/customer/bookings")
   }
 
   return (
-    <div className="container mx-auto p-4">
-      {/* Hero Section */}
+    <div className="flex flex-col min-h-screen">
+
+{/* Header */}
+<header className="bg-gray-800 text-white py-4 px-6 flex justify-between items-center">
+        <h1 className="text-2xl font-bold">
+          Define Salon
+        </h1>
+        <div className="flex gap-4">
+          <Button
+            onClick={viewBookings}
+            className="bg-gray-600 hover:bg-gray-700 text-white"
+          >
+            <Calendar className="mr-2" />
+            View Bookings
+          </Button>
+          <Button
+            onClick={checkout}
+            style={{
+              backgroundColor: "rgba(254, 0, 0, 0.76)",
+              position: "relative",
+              paddingRight: "1.5rem",
+            }}
+            className="text-white flex items-center"
+          >
+            <ShoppingCart className="mr-2" />
+            Cart
+            {cart.length > 0 && (
+              <div
+                className="absolute top-0 right-0 flex items-center justify-center rounded-full"
+                style={{
+                  backgroundColor: "white",
+                  color: "rgba(254, 0, 0, 0.76)",
+                  fontSize: "0.75rem",
+                  fontWeight: "bold",
+                  width: "18px",
+                  height: "18px",
+                  lineHeight: "18px",
+                  textAlign: "center",
+                }}
+              >
+                {cart.length}
+              </div>
+            )}
+          </Button>
+        </div>
+      </header>
+      <div className="flex-grow container mx-auto p-4">      {/* Hero Section */}
       <div
         className="text-center mb-6 bg-cover bg-center p-10 rounded-lg"
         style={{
@@ -175,37 +220,6 @@ const Catalogue = ({
             </SelectGroup>
           </SelectContent>
         </Select>
-
-        {/* Cart Button with Badge */}
-        <Button
-          onClick={checkout}
-          style={{
-            backgroundColor: "rgba(254, 0, 0, 0.76)",
-            position: "relative",
-            paddingRight: "1.5rem",
-          }}
-          className="text-white flex items-center"
-        >
-          <ShoppingCart className="mr-2" />
-          Cart
-          {cart.length > 0 && (
-            <div
-              className="absolute top-0 right-0 flex items-center justify-center rounded-full"
-              style={{
-                backgroundColor: "white",
-                color: "rgba(254, 0, 0, 0.76)",
-                fontSize: "0.75rem",
-                fontWeight: "bold",
-                width: "18px",
-                height: "18px",
-                lineHeight: "18px",
-                textAlign: "center",
-              }}
-            >
-              {cart.length}
-            </div>
-          )}
-        </Button>
       </div>
 
       {/* Service Cards */}
@@ -229,23 +243,23 @@ const Catalogue = ({
                   className="mr-2"
                   style={{ color: "rgba(254, 0, 0, 0.76)" }}
                 />
-                Duration: {service.duration}
+                Duration: {service.service_time}
               </p>
               <div className="flex justify-between items-center mt-2">
                 <span className="line-through text-gray-500">
-                  ${service.original_price}
+                  ₹{service.original_price}
                 </span>
                 <span
                   className="font-bold text-lg"
                   style={{ color: "rgba(254, 0, 0, 0.76)" }}
                 >
-                  ${service.selling_price}
+                  ₹{service.selling_price}
                 </span>
               </div>
             </CardContent>
             <CardFooter>
               <Button
-                onClick={() => addToCart(service)}
+                onClick={() => handleAddToCart(service)}
                 style={{ backgroundColor: "rgba(254, 0, 0, 0.76)" }}
                 className="w-full text-white flex items-center justify-center"
               >
@@ -263,6 +277,11 @@ const Catalogue = ({
           {loading ? "Loading more services..." : "Scroll down to load more"}
         </div>
       )}
+      </div>
+          {/* Footer */}
+      <footer className="bg-gray-800 text-white text-center py-4">
+        <p>&copy; {new Date().getFullYear()} Define Salon. All rights reserved.</p>
+      </footer>
     </div>
   );
 };
