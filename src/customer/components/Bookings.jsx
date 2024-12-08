@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useRole } from "@/Context/RoleContext";
 import { fetchBookingServicesByUserId } from "@/services/api";
-import { Clock, Calendar, CheckCircle, XCircle} from "lucide-react";
+import { Clock, Calendar, CheckCircle, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AppointmentStatus } from "@/enums";
+import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 const BookingsPage = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -52,6 +53,7 @@ const BookingsPage = () => {
     CANCELLED_BY_ADMIN: <XCircle className="mr-1 text-red-500" />,
     CANCELLED_BY_CUSTOMER: <XCircle className="mr-1 text-gray-500" />,
   };
+  console.log("booking?.bookingServices", bookings?.bookingServices);
   return (
     <div className="container mx-auto p-4 min-h-screen bg-gray-100">
       <h1 className="text-2xl font-bold text-gray-800 text-center mb-6">
@@ -68,36 +70,58 @@ const BookingsPage = () => {
           experience now!
         </p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {bookings?.map((booking) => (
             <div
               key={booking.$id}
               className="bg-white rounded-lg shadow-lg p-6 border border-gray-200 hover:shadow-xl transition-shadow duration-300"
             >
-              {booking?.bookingServices?.map((service) => {
-                return (
-                  <div key={service.$id} className="mb-4">
-                    <h2 className="text-lg font-bold text-gray-800 mb-2">
-                      {service?.services?.name} {/* Changed to 'service' */}
-                    </h2>
-                    <p className="text-sm text-gray-500 flex items-center mb-2">
-                      <Calendar className="mr-2 text-red-500" />
-                      Date:{" "}
-                      <span className="ml-1 text-gray-800 font-semibold">
-                        {new Date(service.date).toLocaleDateString()}{" "}
-                        {/* Changed to 'service' */}
-                      </span>
-                    </p>
-                    <p className="text-sm text-gray-500 flex items-center mb-2">
+              {/* Render each service in the booking */}
+              {booking?.bookingServices?.map((service, index) => (
+                <div key={service.$id} className="mb-4">
+                  <CardHeader>
+                    <img
+                      src={service?.services?.[0]?.image} // Assuming service has an image property
+                      alt={service?.services?.[0]?.name}
+                      className="w-full h-40 object-cover rounded-t-lg"
+                    />
+                  </CardHeader>
+                  <CardContent>
+                    <CardTitle>{service?.services?.[0]?.name}</CardTitle>
+                    <p className="text-sm text-gray-600 flex items-center mb-2">
                       <Clock className="mr-2 text-red-500" />
-                      Time:{" "}
-                      <span className="ml-1 text-gray-800 font-semibold">
-                        {service.time} {/* Changed to 'service' */}
-                      </span>
+                      Duration: {service?.services?.[0]?.service_time}m
                     </p>
-                  </div>
-                );
-              })}
+
+                    <span
+                      className="font-bold text-lg"
+                      style={{ color: "rgba(254, 0, 0, 0.76)" }}
+                    >
+                      Price: ₹{service?.services?.[0].selling_price}
+                    </span>
+                    {/* Only show the selling price, remove duplicate prices */}
+                  </CardContent>
+                  <p className="text-sm text-gray-500 flex items-center mb-2">
+                    <Calendar className="mr-2 text-red-500" />
+                    Date:{" "}
+                    <span className="ml-1 text-gray-800 font-semibold">
+                      {new Date(service?.date).toLocaleDateString()}
+                    </span>
+                  </p>
+                  <p className="text-sm text-gray-500 flex items-center mb-2">
+                    <Clock className="mr-2 text-red-500" />
+                    Time:{" "}
+                    <span className="ml-1 text-gray-800 font-semibold">
+                      {service?.time}
+                    </span>
+                  </p>
+                  {/* Add a small divider between services */}
+                  {index < booking.bookingServices.length - 1 && (
+                    <div className="my-4 border-t border-gray-300"></div> // Divider line
+                  )}
+                </div>
+              ))}
+
               <p className="text-sm text-gray-500 flex items-center mb-4">
                 <span
                   className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${
@@ -108,20 +132,14 @@ const BookingsPage = () => {
                   {AppointmentStatus[booking.status]}
                 </span>
               </p>
+
               <div className="flex justify-between items-center">
                 <span
                   className="text-lg font-semibold"
                   style={{ color: "rgba(254, 0, 0, 0.76)" }}
                 >
-                  ₹{booking.total.toFixed(2)}
+                  Total: ₹{booking.total.toFixed(2)}
                 </span>
-                {/* <Button
-                  variant="outline"
-                  className="text-sm bg-gray-100 text-red-500 border-red-500 hover:bg-red-100"
-                  onClick={() => alert("Feature to be added!")}
-                >
-                  View Details
-                </Button> */}
               </div>
             </div>
           ))}

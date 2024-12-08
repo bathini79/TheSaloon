@@ -185,7 +185,7 @@ const Catalogue = ({
                     className="mr-2"
                     style={{ color: "rgba(254, 0, 0, 0.76)" }}
                   />
-                  Duration: {service.service_time}
+                  Duration: {service.service_time}m
                 </p>
                 <div className="flex justify-between items-center mt-2">
                   <span className="line-through text-gray-500">

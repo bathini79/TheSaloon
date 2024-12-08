@@ -3,7 +3,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Button } from "../../components/ui/button";
 import { Clock, XCircle } from "lucide-react";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import {  useLocation, useNavigate } from "react-router-dom";
 import "./CartPage.css"; // Make sure the custom styles are still in place
 import { useCart } from "@/Context/CartContext";
 import { useRole } from "@/Context/RoleContext";
@@ -12,7 +12,7 @@ import { createBooking, createBookingServices } from "@/services/api";
 const CartPage = () => {
   const { cart, selectedLocation, clearCart, removeItemFromCart } = useCart();
   const [isLoading, setIsLoading] = useState(false); // Loading state
-
+  const navigate = useNavigate()
   const [schedule, setSchedule] = useState({});
   const [error, setError] = useState("");
   const { userData } = useRole(); // Access setRole from RoleContext
@@ -61,20 +61,15 @@ const CartPage = () => {
 
       if (booking && booking.$id) {
         // Create a booking service entry for each item in the cart
-        const promises = cart.map((service) => 
-          createBookingServiceFunc(
-            booking.$id,
-            service.$id,
-            schedule[service.$id].date,
-            schedule[service.$id].time
-          )
-        );
+   
     
         // Execute all promises concurrently
-        await Promise.all(promises);
+        for (const service of cart) {
+          await createBookingServiceFunc(booking.$id, service.$id,schedule[service.$id].date,schedule[service.$id].time);
+        }
         clearCart([]);
         // Optionally, handle payment after creating booking and services
-        Navigate("/customer/bookings");
+        navigate("/customer/bookings");
       }
     } catch (error) {
       setError("Error while creating booking.");
@@ -118,7 +113,7 @@ const CartPage = () => {
 
               <p className="text-sm text-gray-500 mb-2 flex items-center">
                 <Clock className="inline-block text-red-500 mr-2" />
-                Duration: {item?.service_time}
+                Duration: {item?.service_time}m
               </p>
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
