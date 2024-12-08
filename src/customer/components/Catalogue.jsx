@@ -15,7 +15,7 @@ import {
   CardFooter,
 } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
-import { ShoppingCart, MapPin, DollarSign, Clock, Plus, Calendar } from "lucide-react";
+import { ShoppingCart, MapPin, Clock, Plus, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { fetchAllServices } from "@/services/api";
 import { useCart } from "@/Context/CartContext";
@@ -53,9 +53,7 @@ const Catalogue = ({
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [showCheckout, setShowCheckout] = useState(false);
   const scrollAnchorRef = useRef(null);
-  const observer = useRef(null);
   const navigate = useNavigate(); // Initialize the navigate function
   const { cart, addToCart } = useCart();
   useEffect(() => {
@@ -76,7 +74,6 @@ const Catalogue = ({
 
       setLoading(false);
     };
-
     fetchData();
   }, [selectedLocation, page]);
 

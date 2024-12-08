@@ -155,13 +155,13 @@ console.log(userData)
             <div key={item.$id} className="flex justify-between mb-2">
               <span className="text-gray-600">{item.name}</span>
               <span className="text-gray-800 font-semibold">
-                ${item.selling_price.toFixed(2)}
+                ₹ {item.selling_price.toFixed(2)}
               </span>
             </div>
           ))}
           <div className="flex justify-between text-lg font-semibold mt-4">
             <span>Total:</span>
-            <span>$ {total}</span>
+            <span>₹ {total}</span>
           </div>
           {error && <p className="text-red-500 mt-4">{error}</p>}
           <Button
@@ -203,10 +203,7 @@ const generateTimeSlots = (start, end, duration) => {
     (startHour === endHour && startMinute < endMinute)
   ) {
     slots.push(
-      `₹{String(startHour).padStart(2, "0")}:₹{String(startMinute).padStart(
-        2,
-        "0"
-      )}`
+      `${String(startHour).padStart(2, "0")}:${String(startMinute).padStart(2, "0")}`
     );
     startMinute += durationMinutes;
 
