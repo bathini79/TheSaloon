@@ -4,8 +4,8 @@ import React, { createContext, useState, useContext } from "react";
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  const [cart, setCart] = useState([]);
-  const [selectedLocation, setSelectedLocation] = useState();
+  const [cart, setCart] = useState(JSON.parse(localStorage.getItem("cart")) || []);
+  const [selectedLocation, setSelectedLocation] = useState(JSON.parse(localStorage.getItem("selectedLocation")));
   const addToCart = (service) => {
     setCart((prevCart = []) => [...prevCart, service]);
   };

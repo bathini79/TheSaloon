@@ -86,8 +86,8 @@ const CartPage = () => {
   const createBookingServiceFunc = async (bookingId, serviceId, date, time) => {
     try {
       await createBookingServices({
-        bookings: bookingId, // Link to the booking ID
-        services: serviceId, // Service ID
+        bookings: [bookingId], // Link to the booking ID
+        services: [serviceId], // Service ID
         date,
         time,
       });

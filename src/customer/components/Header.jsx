@@ -11,10 +11,6 @@ function Header() {
   const { setRole } = useRole();
   const viewBookings = () => navigate("/customer/bookings");
   let { cart,setCart } = useCart();
-  useEffect(() => {
-    setCart(JSON.parse(localStorage.getItem("cart"))|| [])
-  }, [])
-  console.log("cart",cart)
 
   const handleSignOut = async () => {
     try {

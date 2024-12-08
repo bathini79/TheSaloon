@@ -34,7 +34,7 @@ const AdminBookings = () => {
       await createBookingServices(
         {
           $id: bookingId, // Link to the booking ID
-          employee: employeeId, // Service ID
+          employee: [employeeId], // Service ID
         },
         true
       );

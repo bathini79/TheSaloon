@@ -9,6 +9,7 @@ export default function CustomerHome() {
   const [locations, setLocations] = useState([]);
   const {selectedLocation,setSelectedLocation} = useCart({})
   const handleSelectedLocation = (location) => {
+    localStorage.setItem("selectedLocation", JSON.stringify(selectedLocation));
     setSelectedLocation(location);
   };
 
