@@ -15,15 +15,15 @@ const Registration = () => {
     phone: "",
   });
   const [error, setError] = useState("");
-  const { setRole,setUserData } = useRole();
+  const { setRole, setUserData } = useRole();
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-  const [loading,setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    setLoading(true)
+    setLoading(true);
     try {
       // Step 1: Create a new user
       const user = await account.create(
@@ -34,7 +34,10 @@ const Registration = () => {
       );
 
       // Step 2: Log the user in to authenticate
-      await account.createEmailPasswordSession(formData.email, formData.password);
+      await account.createEmailPasswordSession(
+        formData.email,
+        formData.password
+      );
 
       // Step 3: Update user preferences with the role
       await account.updatePrefs({
@@ -46,16 +49,17 @@ const Registration = () => {
         userId: user.$id,
         email: formData.email,
         name: formData.name,
-        phone: formData.phone
+        phone: formData.phone,
       });
-      setRole("customer")
+      setRole("customer");
+      setUserData(user);
       // Step 5: Redirect to customer
       navigate("/customer");
     } catch (err) {
       console.error("Registration Error:", err);
       setError(err.message || "Error during registration. Try again.");
     }
-    setLoading(false)
+    setLoading(false);
   };
 
   return (
@@ -108,7 +112,7 @@ const Registration = () => {
           style={{ backgroundColor: "#EF4444", color: "#fff" }}
           disabled={loading}
         >
-           {loading && (
+          {loading && (
             <svg
               className="animate-spin h-4 w-4 mr-2 text-white inline-block"
               xmlns="http://www.w3.org/2000/svg"
@@ -130,7 +134,7 @@ const Registration = () => {
               ></path>
             </svg>
           )}
-                    {loading ? "Registering..." : "Register"}
+          {loading ? "Registering..." : "Register"}
         </Button>
         <p className="text-sm text-center mt-4">
           Already have an account?{" "}

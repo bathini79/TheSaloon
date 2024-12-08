@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Button } from "../../components/ui/button";
-import { Clock, ShoppingCart } from "lucide-react";
+import { Clock, XCircle } from "lucide-react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import "./CartPage.css"; // Make sure the custom styles are still in place
 import { useCart } from "@/Context/CartContext";
@@ -10,12 +10,12 @@ import { useRole } from "@/Context/RoleContext";
 import { createBooking, createBookingServices } from "@/services/api";
 
 const CartPage = () => {
-  const { cart, selectedLocation } = useCart();
+  const { cart, selectedLocation, clearCart, removeItemFromCart } = useCart();
+  const [isLoading, setIsLoading] = useState(false); // Loading state
 
   const [schedule, setSchedule] = useState({});
   const [error, setError] = useState("");
   const { userData } = useRole(); // Access setRole from RoleContext
-console.log(userData)
   const handleDateChange = (date, serviceId) => {
     setSchedule((prev) => ({
       ...prev,
@@ -55,9 +55,10 @@ console.log(userData)
         email: userData.email,
       },
       location: selectedLocation.$id,
-      total:+total,
-      userId:userData.$id
+      total: +total,
+      userId: userData.$id,
     };
+    setIsLoading(true); // Start loading
 
     try {
       // Create the booking via API call (createBooking)
@@ -65,31 +66,40 @@ console.log(userData)
 
       if (booking && booking.$id) {
         // Create a booking service entry for each item in the cart
-        for (const service of cart) {
-          await createBookingServiceFunc(booking.$id, service.$id,schedule[service.$id].date,schedule[service.$id].time);
-        }
+        const promises = cart.map((service) => 
+          createBookingServiceFunc(
+            booking.$id,
+            service.$id,
+            schedule[service.$id].date,
+            schedule[service.$id].time
+          )
+        );
+    
+        // Execute all promises concurrently
+        await Promise.all(promises);
+        clearCart([]);
         // Optionally, handle payment after creating booking and services
-        Navigate("/customer/bookings")
+        Navigate("/customer/bookings");
       }
     } catch (error) {
       setError("Error while creating booking.");
+    } finally {
+      setIsLoading(false); // End loading
     }
   };
-console.log("sc",schedule)
   // Function to create the booking service entry
-  const createBookingServiceFunc = async (bookingId, serviceId,date,time) => {
+  const createBookingServiceFunc = async (bookingId, serviceId, date, time) => {
     try {
       await createBookingServices({
         bookings: bookingId, // Link to the booking ID
         services: serviceId, // Service ID
         date,
-        time
+        time,
       });
     } catch (error) {
       console.error("Error while creating booking service:", error);
     }
   };
-console.log("selectedLocation",selectedLocation)
   return (
     <div className="container mx-auto p-4 min-h-screen bg-gray-100">
       <h1 className="text-2xl font-bold text-gray-800 text-center mb-6">
@@ -104,9 +114,13 @@ console.log("selectedLocation",selectedLocation)
               key={item.$id}
               className="bg-white rounded-lg shadow-lg p-6 mb-4 border border-gray-200 hover:shadow-xl transition-shadow duration-300"
             >
-              <h2 className="font-bold text-lg text-gray-800 mb-4">
-                {item?.name}
+              <h2 className="flex justify-between items-center font-bold text-lg text-gray-800 mb-4">
+                <span>{item?.name}</span>
+                <div onClick={() => removeItemFromCart(item.$id)}>
+                  <XCircle className="text-red-500" size={24} />
+                </div>
               </h2>
+
               <p className="text-sm text-gray-500 mb-2 flex items-center">
                 <Clock className="inline-block text-red-500 mr-2" />
                 Duration: {item?.service_time}
@@ -133,13 +147,15 @@ console.log("selectedLocation",selectedLocation)
                   <option value="" disabled>
                     Select Time
                   </option>
-                  {generateTimeSlots(selectedLocation?.operational_hours_starts_at, selectedLocation?.operational_hours_ends_at, item?.service_time)?.map(
-                    (slot) => (
-                      <option key={slot} value={slot}>
-                        {slot}
-                      </option>
-                    )
-                  )}
+                  {generateTimeSlots(
+                    selectedLocation?.operational_hours_starts_at,
+                    selectedLocation?.operational_hours_ends_at,
+                    item?.service_time
+                  )?.map((slot) => (
+                    <option key={slot} value={slot}>
+                      {slot}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -147,7 +163,7 @@ console.log("selectedLocation",selectedLocation)
         </div>
 
         {/* Cart Summary */}
-        <div className="lg:w-1/3 bg-white rounded-lg shadow-lg p-6">
+         <div className="lg:w-1/3 bg-white rounded-lg shadow-lg p-6">
           <h2 className="text-xl font-bold text-gray-800 mb-4">Cart Summary</h2>
           {cart?.map((item) => (
             <div key={item.$id} className="flex justify-between mb-2">
@@ -162,13 +178,37 @@ console.log("selectedLocation",selectedLocation)
             <span>₹ {total}</span>
           </div>
           {error && <p className="text-red-500 mt-4">{error}</p>}
+
           <Button
+            disabled={isLoading} // Disable button when loading
             onClick={handleCheckout}
             className="w-full bg-red-500 text-white py-3 rounded-lg mt-6 hover:bg-red-600"
           >
-            Proceed to Payment
-          </Button>
-
+            {isLoading && (
+              <svg
+                className="animate-spin h-4 w-4 mr-2 text-white inline-block"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v8h8a8 8 0 01-8 8v-8H4z"
+                ></path>
+              </svg>
+            )}
+            {isLoading ? "Proceeding..." : "Proceed to Payment"}
+          </Button> 
+          
           <div className="mt-8 text-center text-gray-700">
             <h2 className="text-xl font-bold text-gray-800 mb-2">
               Almost There!
@@ -192,7 +232,7 @@ console.log("selectedLocation",selectedLocation)
 // Helper function to generate time slots
 const generateTimeSlots = (start, end, duration) => {
   const slots = [];
-  let [startHour, startMinute] = start.split(":").map(Number);
+  let [startHour, startMinute] = start?.split(":").map(Number);
   const [endHour, endMinute] = end.split(":").map(Number);
   const durationMinutes = parseInt(duration, 10); // Ensure duration is treated as an integer
 
@@ -201,7 +241,10 @@ const generateTimeSlots = (start, end, duration) => {
     (startHour === endHour && startMinute < endMinute)
   ) {
     slots.push(
-      `${String(startHour).padStart(2, "0")}:${String(startMinute).padStart(2, "0")}`
+      `${String(startHour).padStart(2, "0")}:${String(startMinute).padStart(
+        2,
+        "0"
+      )}`
     );
     startMinute += durationMinutes;
 

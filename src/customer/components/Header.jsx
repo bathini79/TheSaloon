@@ -2,7 +2,7 @@ import { useCart } from "@/Context/CartContext";
 import { useRole } from "@/Context/RoleContext";
 import { account } from "@/services/appwrite/appwrite";
 import { ShoppingCart, Calendar, LogOut } from "lucide-react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Header() {
@@ -10,7 +10,11 @@ function Header() {
   const checkout = () => navigate("/customer/cart");
   const { setRole } = useRole();
   const viewBookings = () => navigate("/customer/bookings");
-  const { cart } = useCart();
+  let { cart,setCart } = useCart();
+  useEffect(() => {
+    setCart(JSON.parse(localStorage.getItem("cart"))|| [])
+  }, [])
+  console.log("cart",cart)
 
   const handleSignOut = async () => {
     try {
@@ -51,7 +55,7 @@ function Header() {
           title="Cart"
         >
           <ShoppingCart size={24} />
-          {cart.length > 0 && (
+          {cart?.length > 0 && (
             <span
               className="absolute top-[-6px] right-[-6px] bg-white text-red-600 font-bold text-xs rounded-full w-5 h-5 flex items-center justify-center"
             >

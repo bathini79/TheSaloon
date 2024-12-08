@@ -110,10 +110,11 @@ const Catalogue = ({
   };
 
   const handleAddToCart = (service) => {
+    const currentCart = JSON.parse(localStorage.getItem("cart")) || [];
+    currentCart.push(service);
+    localStorage.setItem("cart", JSON.stringify(currentCart));
     addToCart(service);
   };
-
-
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -138,32 +139,31 @@ const Catalogue = ({
         </div>
         {/* Header with Location Dropdown and Cart */}
         <div className="flex justify-between items-center mb-6">
-  <Select
-    value={selectedLocation?.["$id"]}
-    onValueChange={handleLocationChange}
-  >
-    <SelectTrigger
-      className="border border-gray-300 rounded-md p-2 flex items-center bg-red-100 text-sm w-full max-w-[300px]"
-    >
-      <MapPin
-        className="mr-2 shrink-0"
-        style={{ color: "rgba(254, 0, 0, 0.76)" }}
-      />
-      <span className="truncate w-full text-left">{selectedLocation?.name || "Select a location"}</span>
-    </SelectTrigger>
-    <SelectContent>
-      <SelectGroup>
-        <SelectLabel>Select your location</SelectLabel>
-        {locations.map((location) => (
-          <SelectItem key={location["$id"]} value={location["$id"]}>
-            {location.name}
-          </SelectItem>
-        ))}
-      </SelectGroup>
-    </SelectContent>
-  </Select>
-</div>
-
+          <Select
+            value={selectedLocation?.["$id"]}
+            onValueChange={handleLocationChange}
+          >
+            <SelectTrigger className="border border-gray-300 rounded-md p-2 flex items-center bg-red-100 text-sm w-full max-w-[300px]">
+              <MapPin
+                className="mr-2 shrink-0"
+                style={{ color: "rgba(254, 0, 0, 0.76)" }}
+              />
+              <span className="truncate w-full text-left">
+                {selectedLocation?.name || "Select a location"}
+              </span>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Select your location</SelectLabel>
+                {locations.map((location) => (
+                  <SelectItem key={location["$id"]} value={location["$id"]}>
+                    {location.name}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
         {/* Service Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {services.map((service) => (
@@ -220,7 +220,6 @@ const Catalogue = ({
         )}
       </div>
       {/* Footer */}
-     
     </div>
   );
 };

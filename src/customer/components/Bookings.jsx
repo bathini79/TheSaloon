@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useRole } from "@/Context/RoleContext";
 import { fetchBookingServicesByUserId } from "@/services/api";
-import { Clock, Calendar, CheckCircle, XCircle } from "lucide-react";
+import { Clock, Calendar, CheckCircle, XCircle} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AppointmentStatus } from "@/enums";
 const BookingsPage = () => {
