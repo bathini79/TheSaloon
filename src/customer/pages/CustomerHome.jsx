@@ -30,13 +30,13 @@ export default function CustomerHome() {
           locations={locations}
         />
       )}
-      <LocationPopup
+      {!selectedLocation ?<LocationPopup
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         locations={locations}
         handleSelectedLocation={handleSelectedLocation}
         selectedLocation={selectedLocation}
-      />
+      /> :  null}
     </>
   );
 }

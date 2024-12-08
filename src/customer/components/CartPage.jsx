@@ -91,7 +91,7 @@ console.log(userData)
       console.error("Error while creating booking service:", error);
     }
   };
-
+console.log("selectedLocation",selectedLocation)
   return (
     <div className="container mx-auto p-4 min-h-screen bg-gray-100">
       <h1 className="text-2xl font-bold text-gray-800 text-center mb-6">
@@ -135,7 +135,7 @@ console.log(userData)
                   <option value="" disabled>
                     Select Time
                   </option>
-                  {generateTimeSlots("09:00", "18:00", item?.service_time)?.map(
+                  {generateTimeSlots(selectedLocation?.operational_hours_starts_at, selectedLocation?.operational_hours_ends_at, item?.service_time)?.map(
                     (slot) => (
                       <option key={slot} value={slot}>
                         {slot}
