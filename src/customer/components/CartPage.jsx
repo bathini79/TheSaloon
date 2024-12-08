@@ -48,13 +48,8 @@ const CartPage = () => {
     // Prepare the payload for the booking
     const payload = {
       status: "PENDING_PAYMENT",
-      user: {
-        userId: userData.$id,
-        name: userData.name,
-        phone: userData.phone,
-        email: userData.email,
-      },
-      location: selectedLocation.$id,
+      user: [userData.$id],
+      location: [selectedLocation.$id],
       total: +total,
       userId: userData.$id,
     };
