@@ -8,12 +8,23 @@ import {
 import { DynamicForm } from "@/shared/DynamicForm/DynamicForm";
 import { serviceFormConfig } from "@/admin/metadata/serviceFormConfig";
 import { useToast } from "@/hooks/use-toast";
-import { createService } from "@/services/api";
+import { createService, fetchAllLocations } from "@/services/api";
 
 const ServiceForm = ({ onClose }) => {
   const { toast } = useToast();
+  const [locations, setLocations] = useState([]);
+  useEffect(() => {
+    const loadLocations = async () => {
+      const { response } = await fetchAllLocations();
+      setLocations(response.documents);
+    };
+
+    loadLocations();
+  }, []);
 
   const handleAddService = async (data) => {
+    data.location_ids = data.locations.map(location=>location.$id)
+    delete data.locations
     const { response, error } = await createService(data);
     if (response) {
       toast({ title: "Successfully added service" });
@@ -30,7 +41,7 @@ const ServiceForm = ({ onClose }) => {
           <DialogTitle>Add Service</DialogTitle>
         </DialogHeader>
         <DynamicForm
-          formConfig={serviceFormConfig}
+          formConfig={serviceFormConfig({locations})}
           onSubmit={handleAddService}
           onClose={onClose}
         />

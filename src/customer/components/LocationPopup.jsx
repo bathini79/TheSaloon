@@ -14,16 +14,20 @@ export default function LocationPopup({
   selectedLocation
 }) {
   const handleOnChangeLocation = (event) => {
-    const selectedLocation = locations.find(
+    let _selectedLocation = null;
+    if(!selectedLocation){
+      _selectedLocation = locations[0]
+    }else{
+     _selectedLocation = locations.find(
       (location) => location["$id"] === event.target.value,
-    );
-    handleSelectedLocation(selectedLocation);
+    )};
+    handleSelectedLocation(_selectedLocation);
     setIsOpen(false);
   };
 
   return (
     <div>
-      {locations.length>0 ?<Dialog open={isOpen} onOpenChange={() => setIsOpen(false)}>
+      {locations.length>0 ?<Dialog open={isOpen} onOpenChange={handleOnChangeLocation}>
         <DialogContent>
           <DialogTitle>Choose Your Location</DialogTitle>
           <DialogDescription>

@@ -5,6 +5,7 @@ import { createUsers } from "@/services/api"; // Ensure this is implemented corr
 import { account } from "@/services/appwrite/appwrite";
 import { Button } from "@/components/ui/button";
 import { useRole } from "@/Context/RoleContext";
+import { useToast } from "@/hooks/use-toast";
 
 const Registration = () => {
   const navigate = useNavigate();
@@ -16,6 +17,8 @@ const Registration = () => {
   });
   const [error, setError] = useState("");
   const { setRole, setUserData } = useRole();
+  const { toast } = useToast();
+
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -53,6 +56,10 @@ const Registration = () => {
       });
       setRole("customer");
       setUserData(user);
+      toast({
+        variant: "success",
+        title: "Added to the cart!",
+      })
       // Step 5: Redirect to customer
       navigate("/customer");
     } catch (err) {

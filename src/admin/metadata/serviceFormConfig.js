@@ -1,4 +1,4 @@
-export const serviceFormConfig = [
+export const serviceFormConfig = (actions)=>{return[
     {
       id: "name",
       label: "Name",
@@ -45,5 +45,12 @@ export const serviceFormConfig = [
         disable: false, // Not just disabled; hidden when the condition is unmet
       },
     },
+    {
+      id: "location",
+      label: "Location",
+      type: "multi-select", // Use select dropdown for location
+      options: actions.locations, // This will be populated dynamically from locations
+      required: true,
+    },
   ];
-  
+  }

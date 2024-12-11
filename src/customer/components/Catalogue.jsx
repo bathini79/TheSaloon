@@ -19,6 +19,7 @@ import { ShoppingCart, MapPin, Clock, Plus, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { fetchAllServices } from "@/services/api";
 import { useCart } from "@/Context/CartContext";
+import { useToast } from "@/hooks/use-toast";
 
 // Simulated API for fetching services
 const fetchServices = async (location, page) => {
@@ -56,6 +57,8 @@ const Catalogue = ({
   const scrollAnchorRef = useRef(null);
   const navigate = useNavigate(); // Initialize the navigate function
   const { cart, addToCart } = useCart();
+  const { toast } = useToast();
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -110,6 +113,10 @@ const Catalogue = ({
   };
 
   const handleAddToCart = (service) => {
+    toast({
+      variant: "success",
+      title: "Added to the cart!",
+    })
     const currentCart = JSON.parse(localStorage.getItem("cart")) || [];
     currentCart.push(service);
     localStorage.setItem("cart", JSON.stringify(currentCart));
@@ -173,9 +180,9 @@ const Catalogue = ({
             >
               <CardHeader>
                 <img
-                  src={service.image}
+                  src={service?.image }
                   alt={service.name}
-                  className="w-full h-40 object-cover rounded-t-lg"
+                  className="w-full h-60 object-cover rounded-t-lg"
                 />
               </CardHeader>
               <CardContent>
