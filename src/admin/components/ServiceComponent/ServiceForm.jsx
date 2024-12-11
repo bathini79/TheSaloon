@@ -23,7 +23,7 @@ const ServiceForm = ({ onClose }) => {
   }, []);
 
   const handleAddService = async (data) => {
-    data.location_ids = data.locations.map(location=>location.$id)
+    data.location_ids = data.location.map(l=>l.$id)
     delete data.locations
     const { response, error } = await createService(data);
     if (response) {
