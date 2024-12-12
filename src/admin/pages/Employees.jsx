@@ -24,8 +24,8 @@ const Employees = () => {
       <div className="flex flex-col items-center px-6 py-8 min-h-screen bg-gray-50 w-full">
         {/* Header Section */}
         <div className="flex justify-between items-center w-full mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">Employees</h1>
-          <Button onClick={() => setEmployeeAdd(true)}>
+          <h1 className="text-3xl font-bold text-gray-800">My Employees</h1>
+          <Button onClick={() => setEmployeeAdd(true)} variant="primary">
             <CirclePlus /> Add Employee
           </Button>
         </div>

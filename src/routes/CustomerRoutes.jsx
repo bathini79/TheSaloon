@@ -3,7 +3,7 @@ import CustomerHome from "@/customer/pages/CustomerHome";
 import CartPage from "@/customer/components/CartPage";
 import BookingsPage from "@/customer/components/Bookings";
 import Header from "@/customer/components/Header";
-import Footer from "@/customer/components/Footer";
+import Footer from "@/shared/Footer";
 
 const CustomerRoutes = () => {
   return (

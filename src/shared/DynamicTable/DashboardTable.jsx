@@ -34,7 +34,7 @@ const DashboardTable = ({
 
   useEffect(() => {
     fetchData();
-  }, [reloadData, currentPage, searchQuery]);
+  }, [ currentPage, searchQuery,reloadData]);
 
   return (
     <div className="p-6">

@@ -1,13 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { account } from "@/services/appwrite/appwrite";
-import { LogOut, User } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { useRole } from "@/Context/RoleContext";
 
 const ProfileMenu = () => {
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
-  const { setRole } = useRole(); // Access setRole from RoleContext
+  const { setRole } = useRole();
 
   const handleSignOut = async () => {
     try {
@@ -21,12 +20,12 @@ const ProfileMenu = () => {
   };
 
   return (
-    <div className="relative">
-      {/* Profile Icon */}
+    <div className="flex">
+      {/* Sign Out Button with flex layout */}
       <button
         onClick={handleSignOut}
-        className="p-2 rounded-full bg-gray-200 hover:bg-gray-300 focus:outline-none"
-        aria-label="Profile Menu"
+        className="flex items-center p-3"
+        aria-label="Sign Out"
       >
         <LogOut className="mr-2" size={20} />
         Sign Out

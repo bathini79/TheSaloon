@@ -19,8 +19,8 @@ const AdminBookings = () => {
 
   // This is where you define the handleEdit function
   const handleEdit = (location) => {
-    location.name = location.user.name;
-    location.location = location.location.name;
+    // location.name = location.user.name;
+    // location.location = location.location[0].name;
 
     setAdminBookingsAdd(true);
     setFormData(location);

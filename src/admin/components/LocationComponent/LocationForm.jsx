@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/dialog";
 import { DynamicForm } from "@/shared/DynamicForm/DynamicForm";
 import { locationFormConfig } from "@/admin/metadata/locationFormConfig";
+
 const LocationForm = ({ onClose, handleAddLocation, formData }) => {
   return (
     <Dialog open={true} onOpenChange={onClose}>

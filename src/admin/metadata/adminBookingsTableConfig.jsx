@@ -7,16 +7,16 @@ export const bookingsTableConfig = (actions) => [
 
   {
     id: 'user',
-    accessorKey: "user.name", // Assuming `user` is populated with related data
+    accessorFn: (row) => console.log(row) ,// Use accessorFn for custom access logic
     header: "User",
-    cell: ({ row }) => row.original.user?.name || "N/A",
+    // cell: ({ row }) => row.getValue(), // Access the value processed by accessorFn
   },
 
   {
     id: 'location',
-    accessorKey: "location.name", // Assuming `location` is populated with related data
+    accessorFn: (row) => row?.location?.[0]?.name || "N/A", // Same for location
     header: "Location",
-    cell: ({ row }) => row.original.location?.name || "N/A",
+    // cell: ({ row }) => row.getValue(), // Access the value processed by accessorFn
   },
 
   {
@@ -30,12 +30,7 @@ export const bookingsTableConfig = (actions) => [
         >
           Edit
         </Button>
-        <Button
-          onClick={() => actions.handleDelete(row.original)}
-          variant="destructive"
-        >
-          Delete
-        </Button>
+
       </div>
     ),
   },

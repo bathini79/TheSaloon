@@ -6,9 +6,12 @@ import Employees from "@/admin/pages/Employees";
 import AdminBookings from "@/admin/pages/AdminBooking";
 import { SidebarProvider } from "@/shared/ui/sidebar";
 import { AppSidebar } from "@/admin/components/Sidebar/AppSidebar";
+import Footer from "@/shared/Footer";
+import AdminHeader from "@/customer/components/AdminHeader";
 
 const AdminRoutes = () => {
   return (
+    <>
     <SidebarProvider>
       <AppSidebar />
       <Routes>
@@ -21,7 +24,7 @@ const AdminRoutes = () => {
         {/* Fallback Route */}
         <Route path="*" element={<AdminHome />} />
       </Routes>
-    </SidebarProvider>
+    </SidebarProvider><Footer /></>
   );
 };
 

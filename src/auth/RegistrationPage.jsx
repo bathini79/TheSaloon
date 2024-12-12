@@ -48,17 +48,19 @@ const Registration = () => {
       });
 
       // Step 4: Save additional user information in your backend (optional)
-      await createUsers({
+      const userDataRes=await createUsers({
         userId: user.$id,
         email: formData.email,
         name: formData.name,
         phone: formData.phone,
       });
+
       setRole("customer");
-      setUserData(user);
+      setU
+      
       toast({
         variant: "success",
-        title: "Added to the cart!",
+        title: "User Registered Successfully!",
       })
       // Step 5: Redirect to customer
       navigate("/customer");

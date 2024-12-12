@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { account } from "@/services/appwrite/appwrite";
 import { useRole } from "@/Context/RoleContext";
+import { fetchByUserId } from "@/services/api";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -29,7 +30,8 @@ const Login = () => {
         if (user) {
           const userRole = user?.prefs?.role;
           setRole(userRole);
-          setUserData(user)
+          const userDataRes = await fetchByUserId(user.$id)
+          setUserData({...user,customUserId:userDataRes?.$id});
           navigate(`/${userRole}`, { replace: true });
         }
       }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -23,9 +23,11 @@ const ServiceForm = ({ onClose }) => {
   }, []);
 
   const handleAddService = async (data) => {
-    data.location_ids = data.location.map(l=>l.$id)
-    delete data.locations
-    const { response, error } = await createService(data);
+    const clonedData = structuredClone(data); // Create a deep copy of the input data
+  clonedData.location_ids = clonedData.location
+  delete clonedData.location;
+
+  const { response, error } = await createService(clonedData);
     if (response) {
       toast({ title: "Successfully added service" });
       onClose(); // Close dialog after successful submission

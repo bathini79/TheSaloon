@@ -3,6 +3,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useState } from "react";
 import MultiSelect from "../ui/multiselect";
+import { uploadFile } from "@/services/api";
 
 export const DynamicForm = ({
   formConfig,
@@ -43,6 +44,20 @@ export const DynamicForm = ({
       onSubmit(formData);
     }
   };
+  const handleFileUpload = async (e, id) => {
+    const file = e.target.files[0];
+    if (!file) return;
+  
+    try {
+      const uploadedFile = await uploadFile(file)
+      setFormData({
+        ...formData,
+        [id]: uploadedFile.url, // Store the file ID in the form data
+      });
+    } catch (error) {
+      setErrors({ ...errors, [id]: "Failed to upload image" });
+    }
+  };
   // Dynamic field rendering
   const renderField = ({
     id,
@@ -62,9 +77,8 @@ export const DynamicForm = ({
       value: formData?.[id] || "",
       onChange: handleChange,
       placeholder: placeholder || "",
-      className: `border ${
-        errors[id] ? "border-red-500" : "border-gray-300"
-      } p-2 w-full`,
+      className: `border ${errors[id] ? "border-red-500" : "border-gray-300"
+        } p-2 w-full`,
       ...rest,
     };
     switch (type) {
@@ -120,9 +134,8 @@ export const DynamicForm = ({
               name={id}
               value={formData?.[id] || ""}
               onChange={handleChange}
-              className={`border ${
-                errors[id] ? "border-red-500" : "border-gray-300"
-              } p-2 w-full`}
+              className={`border ${errors[id] ? "border-red-500" : "border-gray-300"
+                } p-2 w-full`}
             >
               <option value="">Select {label.toLowerCase()}</option>
               {options.map((option) => (
@@ -145,9 +158,8 @@ export const DynamicForm = ({
               onChange={(e) => {
                 setFormData({ ...formData, [id]: e });
               }}
-              className={`border ${
-                errors[id] ? "border-red-500" : "border-gray-300"
-              } p-2 w-full`}
+              className={`border ${errors[id] ? "border-red-500" : "border-gray-300"
+                } p-2 w-full`}
               options={options}
             ></MultiSelect>
             {errors[id] && <p className="text-red-500 text-sm">{errors[id]}</p>}
@@ -182,6 +194,25 @@ export const DynamicForm = ({
           </div>
         );
 
+      case "image-upload":
+        return (
+          <div key={id} className="space-y-2">
+            <Label htmlFor={id} className="font-medium text-sm">
+              {label}
+            </Label>
+            <input
+              type="file"
+              id={id}
+              name={id}
+              accept="image/*"
+              onChange={(e) => handleFileUpload(e, id)}
+              className="border p-2 w-full"
+            />
+            {/* {errors[id] && <p className="text-red-500 text-sm">{errors[id]}</p>} */}
+          </div>
+        );
+
+
       default:
         return null;
     }
@@ -194,7 +225,7 @@ export const DynamicForm = ({
         <Button type="button" variant="outline" onClick={onClose}>
           Cancel
         </Button>
-        <Button type="submit">Submit</Button>
+        <Button type="submit" variant="primary">Submit</Button>
       </div>
     </form>
   );

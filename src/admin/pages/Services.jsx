@@ -11,16 +11,18 @@ const Services = () => {
   const [reloadData, setReloadData] = useState(false);
 
   const onClose = () => {
-    setServiceAdd(false);
+    console.log("true")
     setReloadData(true);
+    setTimeout(() => setReloadData(false), 0); // Reset reloadData after triggering
+    setServiceAdd(false);
   };
 
   return (
     <div className="flex flex-col items-center px-6 py-8 min-h-screen bg-gray-50 w-full">
       {/* Header Section */}
       <div className="flex justify-between items-center w-full mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">Services</h1>
-        <Button onClick={() => setServiceAdd(true)}>
+        <h1 className="text-3xl font-bold text-gray-800">My Services</h1>
+        <Button onClick={() => setServiceAdd(true)} variant="primary">
           <CirclePlus /> Add Service
         </Button>
       </div>

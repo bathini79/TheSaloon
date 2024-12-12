@@ -1,6 +1,6 @@
 const collections = {
     users:{
-        collecionId:import.meta.env.VITE_COLLECTION_USERS_ID,
+      collectionId:import.meta.env.VITE_COLLECTION_USERS_ID,
         databaseId:import.meta.env.VITE_DATABASE_ID
     },
       services: {

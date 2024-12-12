@@ -6,13 +6,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { DynamicForm } from "@/shared/DynamicForm/DynamicForm";
-import { fetchAllEmployees, fetchBookingServicesByBookingId } from "@/services/api"; // Fetch services by bookingId
+import { fetchAllEmployees, fetchBookingServicesByBookingId, fetchBookingServicesByUserId } from "@/services/api"; // Fetch services by bookingId
 
 // adminBookingsFormConfig.js
-export const adminBookingsFormConfig = (services, employees) => {
-  const serviceFields = services?.map((service) => ({
-    id: `service_${service.bookingId}`,
-    label: `Assign Employee for ${service.name}`,
+export const adminBookingsFormConfig = (formData, employees) => {
+  const serviceFields = formData.bookingServices?.map((service) => ({
+    id: `service_${service?.$id}`,
+    label: `Assign Employee for ${service?.services[0]?.name}`,
     type: 'select',
     required: true,
     options: employees?.map((employee) => ({
@@ -101,7 +101,7 @@ const AdminBookingsForm = ({ onClose, formData,handleAddBookings }) => {
           <DialogTitle>My Bookings</DialogTitle>
         </DialogHeader>
         <DynamicForm
-          formConfig={adminBookingsFormConfig(services, employees)} // Pass services and employees
+          formConfig={adminBookingsFormConfig(formData, employees)} // Pass services and employees
           onClose={onClose}
           data={formData}
           onSubmit={(data)=>handleAddBookings(data)}

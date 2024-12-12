@@ -137,7 +137,8 @@ const Catalogue = ({
         >
           <h1 className="text-4xl font-extrabold text-white">
             Welcome to{" "}
-            <span style={{ color: "rgba(254, 0, 0, 0.76)" }}>Define Salon</span>
+            <span style={{ color: "rgba(254, 0, 0, 0.76)",fontSize:"40px" }}>Define</span>
+            <span style={{ fontSize:"40px" }}>Salon</span>
           </h1>
           <p className="text-gray-200 mt-2 text-lg">
             Premium salon services tailored just for you. Experience luxury and

@@ -1,0 +1,29 @@
+/* CSS for the layout */
+.main-container {
+    display: flex;
+    flex-direction: column;  /* Ensure the header is on top */
+    min-height: 100vh;
+  }
+  
+  .header {
+    height: 60px; /* Adjust header height */
+    background-color: #1f2937;  /* Example background color */
+  }
+  
+  .sidebar-container {
+    display: flex;
+    min-height: 100vh;
+  }
+  
+  .sidebar {
+    width: 240px;  /* Set width of the sidebar */
+    background-color: #fff;
+    border-right: 1px solid #e5e7eb;
+  }
+  
+  .content {
+    flex-grow: 1;
+    padding: 16px;
+    background-color: #f3f4f6;
+  }
+  

@@ -1,22 +1,22 @@
 import { ID } from "appwrite";
-import { databases, Query } from "./appwrite/appwrite";
+import { databases, Query, storage } from "./appwrite/appwrite";
 import collections from "./appwrite/collections";
 
 export const createLocation = async (payload, updateData) => {
   try {
     const response = (await updateData)
       ? databases.updateDocument(
-          collections["locations"]?.databaseId,
-          collections["locations"]?.collectionId,
-          payload.$id, // Let Appwrite generate a unique ID
-          payload,
-        )
+        collections["locations"]?.databaseId,
+        collections["locations"]?.collectionId,
+        payload.$id, // Let Appwrite generate a unique ID
+        payload,
+      )
       : databases.createDocument(
-          collections["locations"]?.databaseId,
-          collections["locations"]?.collectionId,
-          ID.unique(), // Let Appwrite generate a unique ID
-          payload,
-        );
+        collections["locations"]?.databaseId,
+        collections["locations"]?.collectionId,
+        ID.unique(), // Let Appwrite generate a unique ID
+        payload,
+      );
     return { response }; // Return an object with the response
   } catch (error) {
     return { error: error.message || error }; // Return the error message
@@ -51,17 +51,17 @@ export const createService = async (payload, updateData) => {
   try {
     const response = (await updateData)
       ? databases.updateDocument(
-          collections["services"]?.databaseId,
-          collections["services"]?.collectionId,
-          payload.$id, // Let Appwrite generate a unique ID
-          payload,
-        )
+        collections["services"]?.databaseId,
+        collections["services"]?.collectionId,
+        payload.$id, // Let Appwrite generate a unique ID
+        payload,
+      )
       : databases.createDocument(
-          collections["services"]?.databaseId,
-          collections["services"]?.collectionId,
-          ID.unique(), // Let Appwrite generate a unique ID
-          payload,
-        );
+        collections["services"]?.databaseId,
+        collections["services"]?.collectionId,
+        ID.unique(), // Let Appwrite generate a unique ID
+        payload,
+      );
     return { response }; // Return an object with the response
   } catch (error) {
     return { error: error.message || error }; // Return the error message
@@ -188,6 +188,22 @@ export const fetchBookingServicesByUserId = async (userId) => {
   }
 };
 
+export const fetchByUserId = async (userId) => {
+  try {
+    const response = await databases.listDocuments(
+      collections["users"].databaseId,
+      collections["users"].collectionId,
+      [
+        Query.equal("userId", userId) // Assuming 'bookingId' is a field in your document
+      ]
+    );
+    return response.documents; // Return an array of booking services
+  } catch (error) {
+    console.error("Error fetching booking services by bookingId:", error);
+    throw error; // Throw error to handle it in the component
+  }
+};
+
 
 export const fetchAllBookings = async ({
   limit = 10,
@@ -236,17 +252,17 @@ export const createEmployee = async (payload, updateData) => {
   try {
     const response = (await updateData)
       ? databases.updateDocument(
-          collections["employees"]?.databaseId,
-          collections["employees"]?.collectionId,
-          payload.$id, // Let Appwrite generate a unique ID
-          payload,
-        )
+        collections["employees"]?.databaseId,
+        collections["employees"]?.collectionId,
+        payload.$id, // Let Appwrite generate a unique ID
+        payload,
+      )
       : databases.createDocument(
-          collections["employees"]?.databaseId,
-          collections["employees"]?.collectionId,
-          ID.unique(), // Let Appwrite generate a unique ID
-          payload,
-        );
+        collections["employees"]?.databaseId,
+        collections["employees"]?.collectionId,
+        ID.unique(), // Let Appwrite generate a unique ID
+        payload,
+      );
     return { response };
   } catch (error) {
     return { error: error.message || error };
@@ -254,23 +270,37 @@ export const createEmployee = async (payload, updateData) => {
 };
 
 
-export const createUsers = async (payload, updateData) => {
+export const createUsers = async (payload) => {
   try {
-    const response = (await updateData)
-      ? databases.updateDocument(
-          collections["users"]?.databaseId,
-          collections["users"]?.collectionId,
-          payload.userId, // Let Appwrite generate a unique ID
-          payload,
-        )
-      : databases.createDocument(
-          collections["users"]?.databaseId,
-          collections["users"]?.collectionId,
-          ID.unique(), // Let Appwrite generate a unique ID
-          payload,
-        );
+    const response = databases.createDocument(
+      collections["users"]?.databaseId,
+      collections["users"]?.collectionId,
+      ID.unique(), 
+      payload
+    );
     return { response }; // Return an object with the response
   } catch (error) {
     return { error: error.message || error }; // Return the error message
   }
 };
+export const uploadFile = async (file) => {
+  try {
+    // Upload the file to the storage
+    const response = await storage.createFile(
+      import.meta.env.VITE_STORAGES_ID, // Bucket ID
+      "unique()", // Unique ID for the file
+      file // File to upload
+    );
+
+    // Generate the file's public URL
+    const fileUrl = storage.getFileView(
+      import.meta.env.VITE_STORAGES_ID,
+      response.$id
+    );
+
+    return { url: fileUrl }; // Return the URL as an object
+  } catch (error) {
+    return { error: error.message || error.toString() }; // Return an error message
+  }
+};
+

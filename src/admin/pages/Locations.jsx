@@ -46,7 +46,7 @@ const Locations = () => {
       {/* Header Section */}
       <div className="flex justify-between items-center w-full mb-8">
         <h1 className="text-3xl font-bold text-gray-800">My Locations</h1>
-        <Button onClick={() => setLocationAdd(true)}>
+        <Button onClick={() => setLocationAdd(true)} variant="primary">
           <CirclePlus /> Add Location
         </Button>
       </div>

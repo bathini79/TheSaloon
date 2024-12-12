@@ -28,11 +28,18 @@ export const serviceFormConfig = (actions)=>{return[
       required: true,
     },
     {
+      id: "service_time",
+      label: "Service Time (minutes)",
+      type: "number",
+      required: true,
+    },
+    {
       id: "cancellation_allowed",
       label: "Allow Cancellation?",
       type: "checkbox",
       required: false,
     },
+
     {
       id: "refund_percentage",
       label: "Refund Percentage",
@@ -52,5 +59,11 @@ export const serviceFormConfig = (actions)=>{return[
       options: actions.locations, // This will be populated dynamically from locations
       required: true,
     },
+    {
+      id: "image",
+      label: "Service Image",
+      type: "image-upload",
+      required: true,
+    }
   ];
   }

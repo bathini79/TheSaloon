@@ -6,6 +6,7 @@ import Login from "@/auth/LoginPage";
 import Registration from "@/auth/RegistrationPage";
 import { account } from "@/services/appwrite/appwrite";
 import { useRole } from "@/Context/RoleContext";
+import { fetchByUserId } from "@/services/api";
 
 const AppRouter = () => {
   const { role, setRole,setUserData } = useRole();
@@ -16,7 +17,8 @@ const AppRouter = () => {
       try {
         const user = await account.get();
         const userRole = user.prefs.role // Fetch role from user preferences
-        setUserData(user)
+        const userDataRes = await fetchByUserId(user.$id)
+        setUserData({...user,customUserId:userDataRes?.$id});
         setRole(userRole);
       } catch (error) {
         console.error("No active session:", error.message);
