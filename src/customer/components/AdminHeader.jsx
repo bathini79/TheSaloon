@@ -1,17 +1,21 @@
+import { useCart } from "@/Context/CartContext";
 import { useRole } from "@/Context/RoleContext";
 import { account } from "@/services/appwrite/appwrite";
 import { ShoppingCart, Calendar, LogOut } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import { use } from "react";
 import { useNavigate } from "react-router-dom";
 
 function AdminHeader() {
   const navigate = useNavigate();
   const { setRole } = useRole();
+  const  {clearCart} = useCart()
   const handleSignOut = async () => {
     try {
       await account.deleteSessions("current");
       localStorage.clear();
       setRole(null);
+      clearCart()
       navigate("/login", { replace: true });
     } catch (error) {
       console.error("Error during sign-out:", error);

@@ -53,10 +53,9 @@ const Registration = () => {
         email: formData.email,
         name: formData.name,
         phone: formData.phone,
-      });
-
+      });if(userDataRes){
+      setUserData({...userDataRes,customUserId:userDataRes?.response.$id});
       setRole("customer");
-      setU
       
       toast({
         variant: "success",
@@ -64,11 +63,14 @@ const Registration = () => {
       })
       // Step 5: Redirect to customer
       navigate("/customer");
+    }
     } catch (err) {
       console.error("Registration Error:", err);
       setError(err.message || "Error during registration. Try again.");
     }
+    finally{
     setLoading(false);
+    }
   };
 
   return (

@@ -4,19 +4,22 @@ import collections from "./appwrite/collections";
 
 export const createLocation = async (payload, updateData) => {
   try {
-    const response = (await updateData)
-      ? databases.updateDocument(
+    let response
+    if (updateData)
+      response=databases.updateDocument(
         collections["locations"]?.databaseId,
         collections["locations"]?.collectionId,
         payload.$id, // Let Appwrite generate a unique ID
         payload,
       )
-      : databases.createDocument(
+    else {
+      response=databases.createDocument(
         collections["locations"]?.databaseId,
         collections["locations"]?.collectionId,
         ID.unique(), // Let Appwrite generate a unique ID
         payload,
-      );
+      )
+    };
     return { response }; // Return an object with the response
   } catch (error) {
     return { error: error.message || error }; // Return the error message
@@ -181,7 +184,7 @@ export const fetchBookingServicesByUserId = async (userId) => {
         Query.equal("userId", userId) // Assuming 'bookingId' is a field in your document
       ]
     );
-    return response.documents; // Return an array of booking services
+    return response; // Return an array of booking services
   } catch (error) {
     console.error("Error fetching booking services by bookingId:", error);
     throw error; // Throw error to handle it in the component
@@ -215,6 +218,7 @@ export const fetchAllBookings = async ({
     if (search) {
       queries.push(Query.search("name", search)); // Adjust the field if needed
     }
+    queries.push(Query.orderDesc('$updatedAt')); // Sorting in ascending order
     const response = await databases.listDocuments(
       collections["bookings"]?.databaseId,
       collections["bookings"]?.collectionId,
@@ -250,19 +254,22 @@ export const fetchAllEmployees = async ({
 };
 export const createEmployee = async (payload, updateData) => {
   try {
-    const response = (await updateData)
-      ? databases.updateDocument(
+    let response
+    if (updateData)
+      response = databases.updateDocument(
         collections["employees"]?.databaseId,
         collections["employees"]?.collectionId,
         payload.$id, // Let Appwrite generate a unique ID
         payload,
       )
-      : databases.createDocument(
+    else {
+      response = databases.createDocument(
         collections["employees"]?.databaseId,
         collections["employees"]?.collectionId,
         ID.unique(), // Let Appwrite generate a unique ID
         payload,
-      );
+      )
+    };
     return { response };
   } catch (error) {
     return { error: error.message || error };
@@ -272,10 +279,10 @@ export const createEmployee = async (payload, updateData) => {
 
 export const createUsers = async (payload) => {
   try {
-    const response = databases.createDocument(
+    const response = await databases.createDocument(
       collections["users"]?.databaseId,
       collections["users"]?.collectionId,
-      ID.unique(), 
+      ID.unique(),
       payload
     );
     return { response }; // Return an object with the response

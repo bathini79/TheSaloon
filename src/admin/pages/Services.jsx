@@ -11,7 +11,6 @@ const Services = () => {
   const [reloadData, setReloadData] = useState(false);
 
   const onClose = () => {
-    console.log("true")
     setReloadData(true);
     setTimeout(() => setReloadData(false), 0); // Reset reloadData after triggering
     setServiceAdd(false);

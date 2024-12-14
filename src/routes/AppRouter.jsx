@@ -18,7 +18,7 @@ const AppRouter = () => {
         const user = await account.get();
         const userRole = user.prefs.role // Fetch role from user preferences
         const userDataRes = await fetchByUserId(user.$id)
-        setUserData({...user,customUserId:userDataRes?.$id});
+        setUserData({...user,customUserId:userDataRes[0]?.$id});
         setRole(userRole);
       } catch (error) {
         console.error("No active session:", error.message);

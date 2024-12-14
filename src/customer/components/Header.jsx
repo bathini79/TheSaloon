@@ -10,13 +10,14 @@ function Header() {
   const checkout = () => navigate("/customer/cart");
   const { setRole } = useRole();
   const viewBookings = () => navigate("/customer/bookings");
-  let { cart,setCart } = useCart();
+  let { cart,setCart,clearCart } = useCart();
 
   const handleSignOut = async () => {
     try {
       await account.deleteSessions("current");
       localStorage.clear();
       setRole(null);
+      clearCart()
       navigate("/login", { replace: true });
     } catch (error) {
       console.error("Error during sign-out:", error);

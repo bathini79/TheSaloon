@@ -15,10 +15,9 @@ const BookingsPage = () => {
     const fetchBookings = async () => {
       try {
         // Simulated API call with hardcoded limit
-        const data = await fetchBookingServicesByUserId(userData.$id);
+        const data = await fetchBookingServicesByUserId(userData.customUserId);
         if (data) {
-          console.log(data);
-          setBookings(data || []);
+          setBookings(data?.documents || []);
         }
       } catch (error) {
         console.error("Error fetching bookings:", error);
@@ -53,7 +52,6 @@ const BookingsPage = () => {
     CANCELLED_BY_ADMIN: <XCircle className="mr-1 text-red-500" />,
     CANCELLED_BY_CUSTOMER: <XCircle className="mr-1 text-gray-500" />,
   };
-  console.log("booking?.bookingServices", bookings?.bookingServices);
   return (
     <div className="container mx-auto p-4 min-h-screen bg-gray-100">
       <h1 className="text-2xl font-bold text-gray-800 text-center mb-6">

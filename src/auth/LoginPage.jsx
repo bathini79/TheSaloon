@@ -1,25 +1,31 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { account } from "@/services/appwrite/appwrite";
 import { useRole } from "@/Context/RoleContext";
 import { fetchByUserId } from "@/services/api";
+import { Eye, EyeOff } from "lucide-react"; // For icons
 
 const Login = () => {
   const navigate = useNavigate();
-  const { setRole,setUserData } = useRole();
+  const { setRole, setUserData } = useRole();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // State for toggling password visibility
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
-    setLoading(true)
+    setLoading(true);
     try {
       const response = await account.createEmailPasswordSession(
         formData.email,
@@ -30,16 +36,15 @@ const Login = () => {
         if (user) {
           const userRole = user?.prefs?.role;
           setRole(userRole);
-          const userDataRes = await fetchByUserId(user.$id)
-          setUserData({...user,customUserId:userDataRes?.$id});
+          const userDataRes = await fetchByUserId(user.$id);
+          setUserData({ ...user, customUserId: userDataRes?.[0]?.$id });
           navigate(`/${userRole}`, { replace: true });
         }
       }
     } catch (err) {
       setError("Invalid email or password");
-    }
-    finally{
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -60,15 +65,23 @@ const Login = () => {
           required
           className="mb-4"
         />
-        <Input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleInputChange}
-          required
-          className="mb-4"
-        />
+        <div className="relative mb-4">
+          <Input
+            type={showPassword ? "text" : "password"}
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleInputChange}
+            required
+          />
+          <button
+            type="button"
+            className="absolute right-2 top-2 text-gray-500 hover:text-gray-700"
+            onClick={togglePasswordVisibility}
+          >
+            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+          </button>
+        </div>
         <Button
           type="submit"
           className="w-full"

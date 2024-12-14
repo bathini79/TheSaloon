@@ -10,17 +10,23 @@ import { fetchAllEmployees, fetchBookingServicesByBookingId, fetchBookingService
 
 // adminBookingsFormConfig.js
 export const adminBookingsFormConfig = (formData, employees) => {
-  const serviceFields = formData.bookingServices?.map((service) => ({
-    id: `service_${service?.$id}`,
-    label: `Assign Employee for ${service?.services[0]?.name}`,
-    type: 'select',
-    required: true,
-    options: employees?.map((employee) => ({
-      $id:employee.$id,
-      address: employee.first_name+employee.last_name,
-    })),
-  })) || [];
-
+  const serviceFields =
+    formData.bookingServices?.map((service) => {
+      const options = service?.[`service_${service?.$id}`] ? service?.[`service_${service?.$id}`] : employees?.map((employee) => ({
+        $id: employee.$id,
+        address: `${employee.first_name} ${employee.last_name}`, // Ensure proper concatenation
+      }))
+      
+      return {
+        id: `service_${service?.$id}`,
+        label: `Assign Employee for ${service?.services[0]?.name || "Unknown Service"}`, // Added fallback for service name
+        type: "select",
+        required: true,
+        options: options,
+      };
+    }) || [];
+  ;
+  console.log("serviceFields",serviceFields)
   // Return the updated form config
   return [
     {
@@ -59,27 +65,25 @@ export const adminBookingsFormConfig = (formData, employees) => {
   ];
 };
 
-const AdminBookingsForm = ({ onClose, formData,handleAddBookings }) => {
+const AdminBookingsForm = ({ onClose, formData, handleAddBookings }) => {
   const [services, setServices] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  
-
   // Fetch services and employees based on formData.bookingId
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch booking services for the specific bookingId
-        const fetchedServices = await fetchBookingServicesByUserId(formData.$id);
         setServices(
-          fetchedServices?.map((ser) => ({
+          formData?.bookingServices?.map((ser) => ({
             ...ser.services, // Spread the properties of ser.services
             bookingId: ser.$id,    // 
           }))
         );        // Fetch employees (assuming you have a function to get them)
         const fetchedEmployees = await fetchAllEmployees();
-        setEmployees(fetchedEmployees?.response?.documents);
+        if (fetchedEmployees) {
+          setEmployees(fetchedEmployees?.response?.documents);
+        }
       } catch (err) {
         setError("Error fetching services or employees");
         console.error(err);
@@ -104,7 +108,7 @@ const AdminBookingsForm = ({ onClose, formData,handleAddBookings }) => {
           formConfig={adminBookingsFormConfig(formData, employees)} // Pass services and employees
           onClose={onClose}
           data={formData}
-          onSubmit={(data)=>handleAddBookings(data)}
+          onSubmit={(data) => handleAddBookings(data)}
         />
       </DialogContent>
     </Dialog>

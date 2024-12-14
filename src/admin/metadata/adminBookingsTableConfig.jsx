@@ -7,7 +7,7 @@ export const bookingsTableConfig = (actions) => [
 
   {
     id: 'user',
-    accessorFn: (row) => console.log(row) ,// Use accessorFn for custom access logic
+    accessorFn: (row) => row?.user?.[0]?.name || "N/A", // Same for location
     header: "User",
     // cell: ({ row }) => row.getValue(), // Access the value processed by accessorFn
   },

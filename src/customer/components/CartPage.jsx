@@ -22,7 +22,6 @@ const CartPage = () => {
       [serviceId]: { ...prev[serviceId], date },
     }));
   };
-
   const handleTimeChange = (time, serviceId) => {
     setSchedule((prev) => ({
       ...prev,
@@ -44,14 +43,13 @@ const CartPage = () => {
       setError("Please select a date and time for all services.");
       return;
     }
-
     // Prepare the payload for the booking
     const payload = {
       status: "PENDING_PAYMENT",
       user: [userData.customUserId],
       location: [selectedLocation.$id],
       total: +total,
-      userId: userData.$id,
+      userId: userData.customUserId,
     };
     setIsLoading(true); // Start loading
 

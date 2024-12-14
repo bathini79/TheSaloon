@@ -20,10 +20,19 @@ const AdminBookings = () => {
   // This is where you define the handleEdit function
   const handleEdit = (location) => {
     // location.name = location.user.name;
-    // location.location = location.location[0].name;
-
+    location.location = location.location[0].name;
+    location.name=location?.user?.[0].name
+    let servicesData = {} 
+    location?.bookingServices?.forEach((ser) => {    
+      // Ensure 'ser.employee' is not undefined or empty
+      if (ser?.employee?.[0]) {
+        servicesData[`service_${ser?.$id}`] =  ser.employee[0].$id   // Access the employee's ID
+      }
+    });
+    
     setAdminBookingsAdd(true);
-    setFormData(location);
+    setFormData({...location,...servicesData});
+    console.log("servicesData",{...location,...servicesData})
     setUpdateData(true);
     // Your logic for editing the location goes here
   };
