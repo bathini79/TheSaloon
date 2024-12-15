@@ -31,6 +31,7 @@ const Locations = () => {
     const { response, error } = await createLocation(data,updateData);
     if (response) {
       toast({
+        variant: "success",
         title: "Successfully added location",
       });
       onClose(); // Close dialog after successful submission

@@ -10,6 +10,7 @@ const AdminBookings = () => {
   const [reloadData, setReloadData] = useState(false);
   const [formData, setFormData] = useState({});
   const [updateData, setUpdateData] = useState(false);
+  const [loadData,setLoadData] = useState(false)
 
   const onClose = () => {
     setAdminBookingsAdd(false);
@@ -20,21 +21,26 @@ const AdminBookings = () => {
   // This is where you define the handleEdit function
   const handleEdit = (location) => {
     // location.name = location.user.name;
-    location.location = location.location[0].name;
-    location.name=location?.user?.[0].name
-    let servicesData = {} 
-    location?.bookingServices?.forEach((ser) => {    
-      // Ensure 'ser.employee' is not undefined or empty
+    // Perform a deep clone of the location object
+    const clonedLocation = JSON.parse(JSON.stringify(location));
+
+    // Update the cloned object
+    clonedLocation.location = clonedLocation.location[0]?.name;
+    clonedLocation.name = clonedLocation?.user?.[0]?.name;
+
+    let servicesData = {};
+
+    // Ensure clonedLocation.bookingServices exists before processing
+    clonedLocation?.bookingServices?.forEach((ser) => {
       if (ser?.employee?.[0]) {
-        servicesData[`service_${ser?.$id}`] =  ser.employee[0].$id   // Access the employee's ID
+        servicesData[`service_${ser?.$id}`] = ser.employee[0]?.$id;
       }
     });
-    
+
+    // Update state with the modified cloned data
     setAdminBookingsAdd(true);
-    setFormData({...location,...servicesData});
-    console.log("servicesData",{...location,...servicesData})
+    setFormData({ ...clonedLocation, ...servicesData });
     setUpdateData(true);
-    // Your logic for editing the location goes here
   };
   const { toast } = useToast();
 
@@ -52,6 +58,8 @@ const AdminBookings = () => {
     }
   };
   const handleAddBookings = async (data) => {
+    setLoadData(true)
+
     const payload = {
       $id: data.$id,
       status: data.status,
@@ -69,9 +77,14 @@ const AdminBookings = () => {
       for (const service of _data) {
         await createBookingServiceFunc(service.bookingId, service.employeeId);
       }
-      setTimeout(()=>{
+      setTimeout(() => {
+        toast({
+          variant: "success",
+          title: "Booking Updated Successfullt!",
+        })
+        setLoadData(false)
         onClose()
-      },[2000])
+      }, [2000])
     }
   };
   return (
@@ -97,6 +110,7 @@ const AdminBookings = () => {
           handleAddBookings={handleAddBookings}
           formData={formData}
           updateData={updateData}
+          loadData={loadData}
         />
       )}
     </div>

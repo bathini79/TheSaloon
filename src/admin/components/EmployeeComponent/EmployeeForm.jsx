@@ -35,7 +35,8 @@ const EmployeeForm = ({ onClose }) => {
     const { response, error } = await createEmployee(data);
     if (response) {
       toast({
-        title: "Successfully added employee",
+        variant: "success",
+                title: "Successfully added employee",
       });
       await onClose(); // Close dialog after successful submission
     } else {

@@ -26,7 +26,6 @@ export const adminBookingsFormConfig = (formData, employees) => {
       };
     }) || [];
   ;
-  console.log("serviceFields",serviceFields)
   // Return the updated form config
   return [
     {
@@ -65,7 +64,7 @@ export const adminBookingsFormConfig = (formData, employees) => {
   ];
 };
 
-const AdminBookingsForm = ({ onClose, formData, handleAddBookings }) => {
+const AdminBookingsForm = ({ onClose, formData, handleAddBookings,loadData }) => {
   const [services, setServices] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -96,7 +95,6 @@ const AdminBookingsForm = ({ onClose, formData, handleAddBookings }) => {
       fetchData();
     }
   }, [formData.$id]); // Trigger effect when bookingId changes
-  if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
   return (
     <Dialog open={true} onOpenChange={onClose}>
@@ -109,6 +107,7 @@ const AdminBookingsForm = ({ onClose, formData, handleAddBookings }) => {
           onClose={onClose}
           data={formData}
           onSubmit={(data) => handleAddBookings(data)}
+          loadData={loadData}
         />
       </DialogContent>
     </Dialog>
