@@ -209,7 +209,7 @@ export const DynamicForm = ({
               onChange={(e) => handleFileUpload(e, id)}
               className="border p-2 w-full"
             />
-            {/* {errors[id] && <p className="text-red-500 text-sm">{errors[id]}</p>} */}
+            {errors[id] && <p className="text-red-500 text-sm">{errors[id]}</p>}
           </div>
         );
 
