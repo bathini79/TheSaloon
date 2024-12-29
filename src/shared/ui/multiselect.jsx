@@ -23,7 +23,7 @@ const MultiSelect = ({ options, label, onChange }) => {
     }
     setSelectedOptions(updatedSelections);
     if (onChange) {
-      onChange(updatedSelections.map((selection)=>selection.$id));
+      onChange(updatedSelections.map((selection) => selection.$id));
     }
   };
 
@@ -38,7 +38,13 @@ const MultiSelect = ({ options, label, onChange }) => {
     <div>
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
-          <Button variant="outline" className="w-full justify-between">
+          <Button variant="outline" className="w-full justify-between" style={{
+            display: 'flex',
+            'flex-direction': 'column',
+            'max-height': 'none',
+            height: 'auto', 'min-height': "2.5rem",
+            'align-items': 'flex-start'
+          }}>
             {selectedOptions.length > 0 ? (
               <div className="flex gap-1 flex-wrap">
                 {selectedOptions?.map((value) => (
@@ -63,7 +69,8 @@ const MultiSelect = ({ options, label, onChange }) => {
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-64 p-2">
+        <PopoverContent className="w-64 p-2"
+          style={{ maxHeight: "none", height: "auto" }}>
           <Input placeholder="Search..." className="mb-2" />
           <div className="max-h-40 overflow-y-auto">
             {options.map((option) => (

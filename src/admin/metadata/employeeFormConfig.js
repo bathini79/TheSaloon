@@ -1,3 +1,4 @@
+// Suggested code may be subject to a license. Learn more: ~LicenseLog:1428303415.
 export const employeeFormConfig = (actions) => {
   return [
     {
@@ -45,6 +46,21 @@ export const employeeFormConfig = (actions) => {
       id: "shift_end_at",
       label: "Shift Ends At",
       type: "time",
+      required: true,
+    },
+    {
+      id: "available_days",
+      label: "Available Days",
+      type: "multi-select", // Use select dropdown for location
+      options: [
+        { $id: "monday", name: "Monday" },
+        { $id: "tuesday", name: "Tuesday" },
+        { $id: "wednesday", name: "Wednesday" },
+        { $id: "thursday", name: "Thursday" },
+        { $id: "friday", name: "Friday" },
+        { $id: "saturday", name: "Saturday" },
+        { $id: "sunday", name: "Sunday" },
+      ],
       required: true,
     },
   ];

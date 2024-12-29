@@ -14,7 +14,6 @@ const EmployeeForm = ({ onClose }) => {
   const [locations, setLocations] = useState([]);
   const [services, setServices] = useState([]);
   const { toast } = useToast();
-
   // Fetch locations and services on component mount
   useEffect(() => {
     const loadLocations = async () => {
@@ -32,11 +31,13 @@ const EmployeeForm = ({ onClose }) => {
   }, []);
 
   const handleAddEmployee = async (data) => {
-    const { response, error } = await createEmployee(data);
+    const clonedData = structuredClone(data); // Create a deep copy of the input data
+    clonedData.location =[clonedData.location] 
+    const { response, error } = await createEmployee(clonedData);
     if (response) {
       toast({
         variant: "success",
-                title: "Successfully added employee",
+        title: "Successfully added employee",
       });
       await onClose(); // Close dialog after successful submission
     } else {
@@ -47,7 +48,7 @@ const EmployeeForm = ({ onClose }) => {
     }
   };
 
-  return locations?.length>1 && services?.length>1 ? (
+  return locations?.length > 1 && services?.length > 1 ? (
     <Dialog open={true} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>

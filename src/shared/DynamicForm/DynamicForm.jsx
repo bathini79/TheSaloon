@@ -49,15 +49,10 @@ export const DynamicForm = ({
     const file = e.target.files[0];
     if (!file) return;
   
-    try {
-      const uploadedFile = await uploadFile(file)
       setFormData({
         ...formData,
-        [id]: uploadedFile.url, // Store the file ID in the form data
+        [id]: file, // Store the file object instead of uploading
       });
-    } catch (error) {
-      setErrors({ ...errors, [id]: "Failed to upload image" });
-    }
   };
   // Dynamic field rendering
   const renderField = ({
@@ -227,7 +222,6 @@ export const DynamicForm = ({
           Cancel
         </Button>
         <Button type="submit" variant="primary">
-          
         {loadData && (
             <svg
               className="animate-spin h-4 w-4 mr-2 text-white inline-block"

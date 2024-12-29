@@ -39,7 +39,6 @@ export const serviceFormConfig = (actions)=>{return[
       type: "checkbox",
       required: false,
     },
-
     {
       id: "refund_percentage",
       label: "Refund Percentage",
