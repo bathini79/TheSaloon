@@ -6,6 +6,7 @@ import { account } from "@/services/appwrite/appwrite";
 import { Button } from "@/components/ui/button";
 import { useRole } from "@/Context/RoleContext";
 import { useToast } from "@/hooks/use-toast";
+import { Eye, EyeOff } from "lucide-react";
 
 const Registration = () => {
   const navigate = useNavigate();
@@ -17,10 +18,15 @@ const Registration = () => {
   });
   const [error, setError] = useState("");
   const { setRole, setUserData } = useRole();
+  const [showPassword, setShowPassword] = useState(false); // State for toggling password visibility
+
   const { toast } = useToast();
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
   };
   const [loading, setLoading] = useState(false);
 
@@ -108,15 +114,23 @@ const Registration = () => {
           required
           className="mb-4"
         />
+        <div className="relative mb-4"> 
         <Input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleInputChange}
-          required
-          className="mb-4"
-        />
+            type={showPassword ? "text" : "password"}
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleInputChange}
+            required
+          />
+          <button
+            type="button"
+            className="absolute right-2 top-2 text-gray-500 hover:text-gray-700"
+            onClick={togglePasswordVisibility}
+          >
+            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+          </button>
+        </div>
         <Button
           type="submit"
           className="w-full"
